@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     "comptes",
 ]
 
+
+
+
 AUTH_USER_MODEL = "comptes.Utilisateur"
 
 MIDDLEWARE = [
@@ -84,6 +87,14 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
+
+# EQ-06 : mots de passe hachés avec bcrypt.
+# Le 1er de la liste sert à hacher les NOUVEAUX mots de passe.
+# Les suivants permettent encore de vérifier les anciens.
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
+    "django.contrib.auth.hashers.PBKDF2PasswordHasher",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
