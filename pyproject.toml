@@ -1,0 +1,15 @@
+# ============================================================
+# Configuration de pytest (l'outil qui lance les tests)
+# ============================================================
+[tool.pytest.ini_options]
+
+# Indique à pytest-django où se trouvent les réglages de Django
+# (le fichier config/settings.py)
+DJANGO_SETTINGS_MODULE = "config.settings"
+
+# Dossier où pytest cherche les fichiers de test (test_*.py)
+testpaths = ["tests"]
+
+
+# -v = "verbose" : affiche le nom de chaque test et son résultat
+addopts = "-v"
