@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block titre %}Utilisateurs – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Utilisateurs</h1>
+
+  <table>
+    <thead>
+      <tr>
+        {# scope="col" : indique aux lecteurs d'écran que c'est un titre de colonne (accessibilité) #}
+        <th scope="col">Nom d'utilisateur</th>
+        <th scope="col">Email</th>
+        <th scope="col">Rôle</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in utilisateurs %}
+        <tr>
+          <td>{{ u.username }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.get_role_display }}</td>   {# "Administrateur" au lieu de "ADMIN" #}
+        </tr>
+      {% empty %}
+        {# s'affiche si la liste est vide #}
+        <tr><td colspan="3">Aucun utilisateur.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
