@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titre %}Bibliothèque{% endblock %}</title>
+</head>
+<body>
+  <header>
+    <nav aria-label="Navigation principale">
+      <a href="{% url 'accueil' %}">📚 Bibliothèque</a>
+
+      {% if user.is_authenticated %}
+        {# Connecté : on affiche son nom, son rôle et le bouton de déconnexion #}
+        <span>Connecté : {{ user.username }} ({{ user.get_role_display }})</span>
+        <form method="post" action="{% url 'deconnexion' %}" style="display:inline">
+          {% csrf_token %}
+          <button type="submit">Se déconnecter</button>
+        </form>
+      {% else %}
+        {# Pas connecté : lien vers la page de connexion #}
+        <a href="{% url 'connexion' %}">Se connecter</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <main>
+    {% block contenu %}{% endblock %}
+  </main>
+</body>
+</html>
