@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "comptes",
     "catalogue",
     "prets",
+    "audit",
 ]
 
 
