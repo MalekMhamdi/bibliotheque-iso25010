@@ -19,6 +19,9 @@ from catalogue.models import Auteur, Livre
 from comptes.permissions import RoleRequisMixin   # le vigile des vues classes
 from django.contrib import messages
 from django.db.models import ProtectedError
+from audit.models import JournalAudit
+from audit.services import journaliser
+
 # --- Qui a le droit de quoi (tableau des droits du cadrage) ------------
 # Définis UNE fois, réutilisés par toutes les vues.
 TOUS_LES_ROLES = ("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")   # lire
@@ -45,9 +48,14 @@ class AuteurListe(RoleRequisMixin, ListView):
 class AuteurCreation(RoleRequisMixin, CreateView):
     roles_autorises = GESTIONNAIRES
     model = Auteur
-    fields = CHAMPS_AUTEUR                         # seuls ces champs sont acceptés
+    fields = CHAMPS_AUTEUR
     template_name = "catalogue/auteur_formulaire.html"
-    success_url = reverse_lazy("auteur_liste")     # après succès -> 302 vers la liste
+    success_url = reverse_lazy("auteur_liste")
+
+    def form_valid(self, form):
+        reponse = super().form_valid(form)
+        journaliser(self.request.user, JournalAudit.Action.CREATION, self.object)
+        return reponse    # après succès -> 302 vers la liste
 
 
 # U = UPDATE : modifier un auteur
@@ -55,17 +63,29 @@ class AuteurModification(RoleRequisMixin, UpdateView):
     roles_autorises = GESTIONNAIRES
     model = Auteur
     fields = CHAMPS_AUTEUR
-    template_name = "catalogue/auteur_formulaire.html"   # même page que la création
+    template_name = "catalogue/auteur_formulaire.html"
     success_url = reverse_lazy("auteur_liste")
+
+    def form_valid(self, form):
+        reponse = super().form_valid(form)
+        journaliser(self.request.user, JournalAudit.Action.MODIFICATION, self.object)
+        return reponse
 
 
 # D = DELETE : supprimer un auteur
 class AuteurSuppression(RoleRequisMixin, DeleteView):
     roles_autorises = GESTIONNAIRES
     model = Auteur
-    template_name = "catalogue/auteur_suppression.html"  # page de confirmation
+    template_name = "catalogue/auteur_suppression.html"
     success_url = reverse_lazy("auteur_liste")
 
+    def form_valid(self, form):
+        pk = self.object.pk  # après delete(), pk vaut None
+        reponse = super().form_valid(form)
+        journaliser(
+            self.request.user, JournalAudit.Action.SUPPRESSION, self.object, entite_id=pk
+        )
+        return reponse
 
 # ======================================================================
 # CRUD DES LIVRES (EF-03) : même principe que les auteurs
@@ -117,6 +137,10 @@ class LivreCreation(RoleRequisMixin, CreateView):
     template_name = "catalogue/livre_formulaire.html"
     success_url = reverse_lazy("livre_liste")
 
+    def form_valid(self, form):
+        reponse = super().form_valid(form)
+        journaliser(self.request.user, JournalAudit.Action.CREATION, self.object)
+        return reponse
 
 # U = UPDATE : modifier un livre
 class LivreModification(RoleRequisMixin, UpdateView):
@@ -126,7 +150,10 @@ class LivreModification(RoleRequisMixin, UpdateView):
     template_name = "catalogue/livre_formulaire.html"    # même page que la création
     success_url = reverse_lazy("livre_liste")
 
-
+    def form_valid(self, form):
+        reponse = super().form_valid(form)
+        journaliser(self.request.user, JournalAudit.Action.MODIFICATION, self.object)
+        return reponse
 # D = DELETE : supprimer un livre
 # (ses auteurs ne sont PAS supprimés : seul le LIEN livre <-> auteur
 #  disparaît de la table de liaison ; Goscinny reste en base)
@@ -142,3 +169,9 @@ class LivreSuppression(RoleRequisMixin, DeleteView):
         except ProtectedError:
             messages.error(request, "Ce livre a des prêts : suppression impossible.")
             return self.render_to_response(self.get_context_data())
+
+    def form_valid(self, form):
+        pk = self.object.pk  # après delete(), pk vaut None
+        reponse = super().form_valid(form)  # lève ProtectedError si des prêts existent
+        journaliser(self.request.user, JournalAudit.Action.SUPPRESSION, self.object, entite_id=pk)
+        return reponse    

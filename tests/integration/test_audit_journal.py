@@ -220,3 +220,30 @@ def test_lien_audit_dans_le_menu_pour_l_admin_seulement(client, creer_utilisateu
 
     client.force_login(creer_utilisateur("BIBLIOTHECAIRE"))
     assert f'href="{url}"' not in client.get("/").content.decode()
+
+def test_creer_un_auteur_est_journalise(client, creer_utilisateur):
+    biblio = creer_utilisateur("BIBLIOTHECAIRE")
+    client.force_login(biblio)
+
+    reponse = client.post(
+        reverse("auteur_creation"), {"nom": "Victor Hugo", "nationalite": "Française"}
+    )
+
+    assert reponse.status_code == 302
+    entree = JournalAudit.objects.get()
+    assert entree.utilisateur == biblio
+    assert entree.action == A.CREATION
+    assert entree.entite == "Auteur"
+
+
+def test_supprimer_un_auteur_est_journalise(client, creer_utilisateur):
+    client.force_login(creer_utilisateur("BIBLIOTHECAIRE"))
+    auteur = Auteur.objects.create(nom="Victor Hugo")
+    pk = auteur.pk
+
+    client.post(reverse("auteur_suppression", args=[pk]))
+
+    entree = JournalAudit.objects.get()
+    assert entree.action == A.SUPPRESSION
+    assert entree.entite == "Auteur"
+    assert entree.entite_id == pk    
