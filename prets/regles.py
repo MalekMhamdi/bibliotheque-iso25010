@@ -24,3 +24,15 @@ def calculer_penalite(jours_retard: int) -> Decimal:
 def peut_reserver(compte_actif: bool, a_un_retard: bool, penalite_impayee: Decimal) -> bool:
     """RM-04 : compte actif ET aucun prêt en retard ET pénalité impayée = 0."""
     return compte_actif and not a_un_retard and penalite_impayee == 0
+
+MAX_PRETS_ACTIFS = 3  # RM-01
+
+
+def quota_atteint(nb_prets_actifs: int) -> bool:
+    """RM-01 : refusé si l'adhérent a déjà 3 prêts actifs."""
+    return nb_prets_actifs >= MAX_PRETS_ACTIFS
+
+
+def nb_disponibles(nb_exemplaires: int, nb_prets_actifs_du_livre: int) -> int:
+    """RM-06 : exemplaires restants (jamais négatif)."""
+    return max(0, nb_exemplaires - nb_prets_actifs_du_livre)
