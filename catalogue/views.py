@@ -17,7 +17,8 @@ from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from catalogue.models import Auteur, Livre
 from comptes.permissions import RoleRequisMixin   # le vigile des vues classes
-
+from django.contrib import messages
+from django.db.models import ProtectedError
 # --- Qui a le droit de quoi (tableau des droits du cadrage) ------------
 # Définis UNE fois, réutilisés par toutes les vues.
 TOUS_LES_ROLES = ("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")   # lire
@@ -134,3 +135,10 @@ class LivreSuppression(RoleRequisMixin, DeleteView):
     model = Livre
     template_name = "catalogue/livre_suppression.html"
     success_url = reverse_lazy("livre_liste")
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, "Ce livre a des prêts : suppression impossible.")
+            return self.render_to_response(self.get_context_data())
