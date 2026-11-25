@@ -13,6 +13,12 @@
         {# Liens pour TOUS les utilisateurs connectés #}
         <a href="{% url 'livre_liste' %}">Livres</a>
         <a href="{% url 'auteur_liste' %}">Auteurs</a>
+        <a href="{% url 'mes_prets' %}">Mes prêts</a>
+
+        {# Lien réservé au personnel (les adhérents auraient un 403) #}
+        {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+          <a href="{% url 'pret_liste' %}">Prêts</a>
+        {% endif %}
 
         {# Lien réservé à l'ADMIN (les autres auraient un 403) #}
         {% if user.role == "ADMIN" %}
@@ -35,6 +41,15 @@
   </header>
 
   <main>
+    {# Messages (succès / erreur) envoyés par les vues #}
+    {% if messages %}
+      <ul aria-live="polite">
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
     {% block contenu %}{% endblock %}
   </main>
 </body>

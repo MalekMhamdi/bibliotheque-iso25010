@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block titre %}Mes prêts – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Mes prêts</h1>
+
+  <p>Pénalité impayée : <strong>{{ user.penalite_impayee }} €</strong></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Livre</th>
+        <th scope="col">Statut</th>
+        <th scope="col">Réservé le</th>
+        <th scope="col">Retour prévu</th>
+        <th scope="col">Pénalité</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pret in prets %}
+        <tr>
+          <td>{{ pret.livre.titre }}</td>
+          <td>{{ pret.get_statut_display }}</td>
+          <td>{{ pret.date_reservation }}</td>
+          <td>{{ pret.date_retour_prevue|default:"—" }}</td>
+          <td>{{ pret.penalite }} €</td>
+          <td>
+            {% if pret.statut == "RESERVE" %}
+              <form method="post" action="{% url 'pret_annuler' pret.pk %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit">Annuler</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">Aucun prêt.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

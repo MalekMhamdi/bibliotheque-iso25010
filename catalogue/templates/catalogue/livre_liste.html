@@ -28,10 +28,16 @@
           <td>{{ livre.isbn }}</td>
           <td>{{ livre.categorie|default:"—" }}</td>
           <td>{{ livre.nb_exemplaires }}</td>
-          <td>
+                    <td>
             {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
               <a href="{% url 'livre_modification' livre.pk %}">Modifier</a>
               <a href="{% url 'livre_suppression' livre.pk %}">Supprimer</a>
+            {% endif %}
+            {% if user.role == "ADHERENT" %}
+              <form method="post" action="{% url 'pret_reserver' livre.pk %}" style="display:inline">
+                {% csrf_token %}
+                <button type="submit">Réserver</button>
+              </form>
             {% endif %}
           </td>
         </tr>
