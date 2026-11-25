@@ -31,13 +31,12 @@ def test_isbn_de_13_chiffres_est_accepte():
 @pytest.mark.parametrize(
     "isbn_invalide",
     [
-        "978207061275",     # 12 chiffres -> valeur limite - 1
-        "97820706127580",   # 14 chiffres -> valeur limite + 1
-        "978207061275X",    # 13 caractères mais une LETTRE
-        "978-2070612758",   # contient un TIRET
-        "",                 # VIDE
-        "٩٧٨٢٠٧٠٦١٢٧٥٨",    # 13 chiffres ARABES-INDIENS (pas 0-9)
-    
+        "978207061275",  # 12 chiffres -> valeur limite - 1
+        "97820706127580",  # 14 chiffres -> valeur limite + 1
+        "978207061275X",  # 13 caractères mais une LETTRE
+        "978-2070612758",  # contient un TIRET
+        "",  # VIDE
+        "٩٧٨٢٠٧٠٦١٢٧٥٨",  # 13 chiffres ARABES-INDIENS (pas 0-9)
     ],
 )
 def test_isbn_invalide_est_refuse(isbn_invalide):

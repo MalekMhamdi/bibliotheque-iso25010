@@ -33,8 +33,8 @@ def test_relation_n_n_entre_livres_et_auteurs():
     livre2.auteurs.add(hugo)
 
     # Vérifier : on navigue dans les DEUX sens de la relation
-    assert livre1.auteurs.count() == 2      # un livre -> plusieurs auteurs
-    assert hugo.livres.count() == 2         # un auteur -> plusieurs livres
+    assert livre1.auteurs.count() == 2  # un livre -> plusieurs auteurs
+    assert hugo.livres.count() == 2  # un auteur -> plusieurs livres
 
 
 # ----------------------------------------------------------------------

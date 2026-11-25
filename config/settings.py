@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 import os
 from pathlib import Path
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -42,14 +41,12 @@ INSTALLED_APPS = [
 ]
 
 
-
-
 AUTH_USER_MODEL = "comptes.Utilisateur"
 
 
-LOGIN_URL = "connexion"            
-LOGIN_REDIRECT_URL = "accueil"     
-LOGOUT_REDIRECT_URL = "accueil"   
+LOGIN_URL = "connexion"
+LOGIN_REDIRECT_URL = "accueil"
+LOGOUT_REDIRECT_URL = "accueil"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

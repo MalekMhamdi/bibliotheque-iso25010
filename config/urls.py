@@ -28,5 +28,4 @@ urlpatterns = [
     path("comptes/", include("comptes.urls")),
     path("catalogue/", include("catalogue.urls")),
     path("prets/", include("prets.urls")),
-
 ]

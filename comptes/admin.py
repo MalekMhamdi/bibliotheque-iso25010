@@ -19,9 +19,7 @@ class UtilisateurAdmin(UserAdmin):
     list_filter = ("role", "is_active")
 
     # Écran de MODIFICATION : on ajoute une section "Rôle"
-    fieldsets = UserAdmin.fieldsets + (
-        ("Rôle dans la bibliothèque", {"fields": ("role",)}),
-    )
+    fieldsets = UserAdmin.fieldsets + (("Rôle dans la bibliothèque", {"fields": ("role",)}),)
 
     # Écran de CRÉATION : on demande aussi l'email et le rôle
     add_fieldsets = UserAdmin.add_fieldsets + (

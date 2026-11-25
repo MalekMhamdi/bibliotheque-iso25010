@@ -17,9 +17,7 @@ class Pret(models.Model):
     utilisateur = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="prets"
     )
-    livre = models.ForeignKey(
-        "catalogue.Livre", on_delete=models.PROTECT, related_name="prets"
-    )
+    livre = models.ForeignKey("catalogue.Livre", on_delete=models.PROTECT, related_name="prets")
     statut = models.CharField(max_length=10, choices=Statut.choices, default=Statut.RESERVE)
     date_reservation = models.DateField(default=date.today)
     date_emprunt = models.DateField(null=True, blank=True)
@@ -29,5 +27,6 @@ class Pret(models.Model):
 
     def __str__(self):
         return f"{self.livre} - {self.utilisateur} ({self.statut})"
+
 
 # Create your models here.

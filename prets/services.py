@@ -22,12 +22,9 @@ class RegleMetierError(Exception):
 def reserver(utilisateur, livre):
     """EF-06 : crée un prêt RESERVE (RM-01, RM-04, RM-06)."""
     a_un_retard = utilisateur.prets.filter(statut=S.EN_RETARD).exists()
-    if not regles.peut_reserver(
-        utilisateur.is_active, a_un_retard, utilisateur.penalite_impayee
-    ):
+    if not regles.peut_reserver(utilisateur.is_active, a_un_retard, utilisateur.penalite_impayee):
         raise RegleMetierError(
-            "Réservation impossible : compte inactif, prêt en retard "
-            "ou pénalité impayée."
+            "Réservation impossible : compte inactif, prêt en retard ou pénalité impayée."
         )
 
     nb_prets_actifs = utilisateur.prets.filter(statut__in=Pret.STATUTS_ACTIFS).count()
@@ -58,9 +55,9 @@ def remettre(pret, aujourd_hui):
 @transaction.atomic
 def marquer_retards(aujourd_hui):
     """EF-07 : EN_COURS -> EN_RETARD si aujourd'hui > date prévue. Renvoie le nombre."""
-    return Pret.objects.filter(
-        statut=S.EN_COURS, date_retour_prevue__lt=aujourd_hui
-    ).update(statut=S.EN_RETARD)
+    return Pret.objects.filter(statut=S.EN_COURS, date_retour_prevue__lt=aujourd_hui).update(
+        statut=S.EN_RETARD
+    )
 
 
 @transaction.atomic

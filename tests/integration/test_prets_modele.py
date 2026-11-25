@@ -1,4 +1,5 @@
 """Tests d'intégration du modèle Pret : RM-01, RM-06, suppression protégée."""
+
 import pytest
 from django.urls import reverse
 
@@ -41,9 +42,7 @@ def test_seuls_les_statuts_actifs_comptent(creer_utilisateur, livre, statut, est
     """RM-01 / RM-06 : seuls RESERVE, EN_COURS, EN_RETARD sont des prêts actifs."""
     adherent = creer_utilisateur("ADHERENT")
     Pret.objects.create(utilisateur=adherent, livre=livre, statut=statut)
-    nb_actifs = Pret.objects.filter(
-        utilisateur=adherent, statut__in=Pret.STATUTS_ACTIFS
-    ).count()
+    nb_actifs = Pret.objects.filter(utilisateur=adherent, statut__in=Pret.STATUTS_ACTIFS).count()
     assert nb_actifs == (1 if est_actif else 0)
 
 
@@ -57,5 +56,5 @@ def test_suppression_livre_avec_prets_refusee(client, creer_utilisateur, livre):
     url = reverse("livre_suppression", args=[livre.pk])  # À ADAPTER
     reponse = client.post(url)
 
-    assert reponse.status_code == 200                  # page réaffichée, pas de 500
+    assert reponse.status_code == 200  # page réaffichée, pas de 500
     assert Livre.objects.filter(pk=livre.pk).exists()  # le livre est toujours en base

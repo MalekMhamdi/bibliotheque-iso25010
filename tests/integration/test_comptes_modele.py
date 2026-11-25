@@ -18,7 +18,7 @@ def test_role_par_defaut_est_adherent():
     assert user.role == "ADHERENT"
 
 
-@pytest.mark.django_db   #donne au test une base de données temporaire
+@pytest.mark.django_db  # donne au test une base de données temporaire
 def test_les_trois_roles_existent():
     """EF-02 : les 3 rôles du cadrage sont disponibles."""
     roles = [choix[0] for choix in Utilisateur.Role.choices]

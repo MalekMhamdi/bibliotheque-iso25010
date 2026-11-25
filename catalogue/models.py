@@ -18,7 +18,7 @@ class Auteur(models.Model):
     nationalite = models.CharField("nationalité", max_length=100, blank=True)
 
     class Meta:
-        ordering = ["nom"]          # les auteurs sont toujours triés par nom
+        ordering = ["nom"]  # les auteurs sont toujours triés par nom
 
     def __str__(self) -> str:
         return self.nom
@@ -33,18 +33,12 @@ class Livre(models.Model):
 
     # RM-05 : unique=True  -> la BASE refuse les doublons (IntegrityError)
     #         validators   -> notre validateur de format (13 chiffres 0-9)
-    isbn = models.CharField(
-        "ISBN", max_length=13, unique=True, validators=[valider_isbn]
-    )
+    isbn = models.CharField("ISBN", max_length=13, unique=True, validators=[valider_isbn])
 
     # null=True + blank=True : l'année peut être inconnue
-    annee = models.PositiveSmallIntegerField(
-        "année de publication", null=True, blank=True
-    )
+    annee = models.PositiveSmallIntegerField("année de publication", null=True, blank=True)
 
-    categorie = models.CharField(
-        "catégorie", max_length=100, blank=True, db_index=True
-    )
+    categorie = models.CharField("catégorie", max_length=100, blank=True, db_index=True)
 
     # Au moins 1 exemplaire (valeur limite : 0 est refusé)
     nb_exemplaires = models.PositiveIntegerField(
@@ -53,13 +47,13 @@ class Livre(models.Model):
 
     # Relation N-N : Django crée une table de liaison livre <-> auteur.
     # related_name="livres" : depuis un auteur, on écrit auteur.livres
-    auteurs = models.ManyToManyField(
-        Auteur, related_name="livres", verbose_name="auteurs"
-    )
+    auteurs = models.ManyToManyField(Auteur, related_name="livres", verbose_name="auteurs")
 
     class Meta:
-        ordering = ["titre"]        # les livres sont toujours triés par titre
+        ordering = ["titre"]  # les livres sont toujours triés par titre
 
     def __str__(self) -> str:
         return f"{self.titre} ({self.isbn})"
+
+
 # Create your models here.

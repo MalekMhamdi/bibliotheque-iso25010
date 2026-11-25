@@ -1,4 +1,3 @@
-
 """Vues des prêts (EF-06) : aucune règle métier ici, seulement des appels aux services."""
 
 from datetime import date
