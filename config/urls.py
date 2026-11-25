@@ -26,4 +26,5 @@ urlpatterns = [
     path("health/", health, name="health"),
     path("", TemplateView.as_view(template_name="accueil.html"), name="accueil"),
     path("comptes/", include("comptes.urls")),
+    path("catalogue/", include("catalogue.urls")),
 ]

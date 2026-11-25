@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block titre %}Auteurs – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Auteurs</h1>
+
+  {# Le lien "Ajouter" n'est affiché qu'aux gestionnaires (confort).    #}
+  {# La VRAIE protection reste le vigile côté serveur (403).             #}
+  {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+    <p><a href="{% url 'auteur_creation' %}">+ Ajouter un auteur</a></p>
+  {% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Nationalité</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for auteur in auteurs %}
+        <tr>
+          <td>{{ auteur.nom }}</td>
+          <td>{{ auteur.nationalite|default:"—" }}</td>   {# "—" si vide #}
+          <td>
+            {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+              <a href="{% url 'auteur_modification' auteur.pk %}">Modifier</a>
+              <a href="{% url 'auteur_suppression' auteur.pk %}">Supprimer</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3">Aucun auteur.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block titre %}Supprimer un auteur – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Supprimer l'auteur</h1>
+  {# On demande confirmation : une suppression ne s'annule pas #}
+  <p>Voulez-vous vraiment supprimer « {{ object.nom }} » ?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Oui, supprimer</button>
+    <a href="{% url 'auteur_liste' %}">Annuler</a>
+  </form>
+{% endblock %}

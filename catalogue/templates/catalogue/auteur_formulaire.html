@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block titre %}Auteur – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  {# "object" existe seulement en modification (l'auteur qu'on modifie) #}
+  <h1>{% if object %}Modifier l'auteur{% else %}Nouvel auteur{% endif %}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}            {# champs + messages d'erreur générés par Django #}
+    <button type="submit">Enregistrer</button>
+    <a href="{% url 'auteur_liste' %}">Annuler</a>
+  </form>
+{% endblock %}
