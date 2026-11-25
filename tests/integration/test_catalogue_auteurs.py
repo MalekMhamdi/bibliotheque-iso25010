@@ -23,8 +23,8 @@ import pytest
 from catalogue.models import Auteur
 
 # --- Adresses fixes (constantes) -------------------------------------
-URL_LISTE = "/catalogue/auteurs/"              # liste de tous les auteurs
-URL_CREATION = "/catalogue/auteurs/nouveau/"   # formulaire d'ajout
+URL_LISTE = "/catalogue/auteurs/"  # liste de tous les auteurs
+URL_CREATION = "/catalogue/auteurs/nouveau/"  # formulaire d'ajout
 
 
 # --- Adresses qui dépendent de l'auteur -------------------------------
@@ -77,9 +77,9 @@ def test_visiteur_non_connecte_est_redirige(client, db):
 @pytest.mark.parametrize(
     "role, code_attendu, auteur_cree",
     [
-        ("ADMIN", 302, True),            # créé, puis redirigé vers la liste
-        ("BIBLIOTHECAIRE", 302, True),   # idem
-        ("ADHERENT", 403, False),        # refusé ET rien ne doit être créé
+        ("ADMIN", 302, True),  # créé, puis redirigé vers la liste
+        ("BIBLIOTHECAIRE", 302, True),  # idem
+        ("ADHERENT", 403, False),  # refusé ET rien ne doit être créé
     ],
 )
 def test_creation_selon_le_role(client, creer_utilisateur, role, code_attendu, auteur_cree):

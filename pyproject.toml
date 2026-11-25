@@ -17,3 +17,10 @@ addopts = "-v"
 [tool.coverage.run]
 source = ["comptes", "catalogue", "config"]
 omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "manage.py"]
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["*/migrations/*"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]

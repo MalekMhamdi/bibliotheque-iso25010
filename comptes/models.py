@@ -1,5 +1,5 @@
 """Modèle utilisateur : l'utilisateur standard de Django, plus un rôle."""
-"Le principe : dans Django, Utilisateur.objects est le gestionnaire (manager) du modèle. C'est lui qui fabrique les utilisateurs avec create_user et create_superuser. On va personnaliser sa méthode create_superuser pour qu'elle mette le rôle ADMIN."
+
 from decimal import Decimal
 
 from django.contrib.auth.models import AbstractUser, UserManager
@@ -43,6 +43,7 @@ class Utilisateur(AbstractUser):
 
     def __str__(self) -> str:
         return f"{self.username} ({self.get_role_display()})"
-   
+
     penalite_impayee = models.DecimalField(
-     "pénalité impayée", max_digits=6, decimal_places=2, default=Decimal("0.00"))  
+        "pénalité impayée", max_digits=6, decimal_places=2, default=Decimal("0.00")
+    )

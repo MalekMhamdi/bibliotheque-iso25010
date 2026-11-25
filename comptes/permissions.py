@@ -115,7 +115,6 @@ def role_requis(*roles_autorises):
 # ⚠️ Le mixin doit être À GAUCHE dans la liste : Python cherche les méthodes
 # de gauche à droite, donc le vigile passe AVANT le formulaire de CreateView.
 class RoleRequisMixin:
-
     # Valeur par défaut : aucun rôle autorisé.
     # Chaque page la REMPLACE par ses propres rôles.
     # (si une page oublie de la remplacer -> personne n'entre : c'est sûr)

@@ -28,8 +28,8 @@ from django.contrib.auth import get_user_model
 @pytest.mark.parametrize(
     "url_admin",
     [
-        "/admin/catalogue/livre/",    # la liste des livres dans /admin
-        "/admin/catalogue/auteur/",   # la liste des auteurs dans /admin
+        "/admin/catalogue/livre/",  # la liste des livres dans /admin
+        "/admin/catalogue/auteur/",  # la liste des auteurs dans /admin
     ],
 )
 def test_catalogue_present_dans_admin(client, db, url_admin):

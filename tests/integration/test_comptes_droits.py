@@ -39,15 +39,15 @@ def test_visiteur_non_connecte_est_redirige_vers_connexion(client):
 
 # Lignes 2, 3 et 4 de la table : UN SEUL test, lancé 3 fois avec des données différentes.
 @pytest.mark.django_db
-@pytest.mark.parametrize(  #lancer LE MÊME test plusieurs fois,avec des données différentes
+@pytest.mark.parametrize(  # lancer LE MÊME test plusieurs fois,avec des données différentes
     "role, code_attendu",
     [
-        ("ADHERENT", 403),        # interdit
+        ("ADHERENT", 403),  # interdit
         ("BIBLIOTHECAIRE", 403),  # interdit
-        ("ADMIN", 200),           # autorisé
+        ("ADMIN", 200),  # autorisé
     ],
 )
 def test_acces_liste_utilisateurs_selon_le_role(client, role, code_attendu):
-    client.force_login(creer_utilisateur(role))   # Préparer : connecté avec ce rôle
-    reponse = client.get(URL_UTILISATEURS)        # Agir : il visite la page admin
-    assert reponse.status_code == code_attendu    # Vérifier : le bon code
+    client.force_login(creer_utilisateur(role))  # Préparer : connecté avec ce rôle
+    reponse = client.get(URL_UTILISATEURS)  # Agir : il visite la page admin
+    assert reponse.status_code == code_attendu  # Vérifier : le bon code

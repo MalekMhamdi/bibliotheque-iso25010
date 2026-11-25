@@ -23,10 +23,10 @@ import pytest
 from catalogue.models import Auteur, Livre
 
 # --- Constantes --------------------------------------------------------
-URL_LISTE = "/catalogue/livres/"               # liste des livres
-URL_CREATION = "/catalogue/livres/nouveau/"    # formulaire d'ajout
-ISBN_ASTERIX = "9782070612758"                 # ISBN du livre déjà en base
-ISBN_NOUVEAU = "9782070612765"                 # ISBN libre, pour créer un livre
+URL_LISTE = "/catalogue/livres/"  # liste des livres
+URL_CREATION = "/catalogue/livres/nouveau/"  # formulaire d'ajout
+ISBN_ASTERIX = "9782070612758"  # ISBN du livre déjà en base
+ISBN_NOUVEAU = "9782070612765"  # ISBN libre, pour créer un livre
 
 
 # --- Adresses qui dépendent du livre ----------------------------------
@@ -61,10 +61,8 @@ def asterix(db, goscinny, uderzo):
     Une fixture peut utiliser d'autres fixtures : pytest crée d'abord
     goscinny et uderzo, puis appelle celle-ci.
     """
-    livre = Livre.objects.create(
-        titre="Astérix le Gaulois", isbn=ISBN_ASTERIX, categorie="BD"
-    )
-    livre.auteurs.add(goscinny, uderzo)   # relie le livre à ses 2 auteurs (N-N)
+    livre = Livre.objects.create(titre="Astérix le Gaulois", isbn=ISBN_ASTERIX, categorie="BD")
+    livre.auteurs.add(goscinny, uderzo)  # relie le livre à ses 2 auteurs (N-N)
     return livre
 
 
@@ -100,14 +98,16 @@ def donnees_livre(auteurs, **changements):
 # ======================================================================
 # parametrize : le même test lancé 3 fois, une fois par rôle
 @pytest.mark.parametrize("role", ["ADMIN", "BIBLIOTHECAIRE", "ADHERENT"])
-def test_tous_les_roles_voient_les_livres_et_leurs_auteurs(client, creer_utilisateur, asterix, role):
+def test_tous_les_roles_voient_les_livres_et_leurs_auteurs(
+    client, creer_utilisateur, asterix, role
+):
     # Préparer : un utilisateur de ce rôle est connecté
     # (creer_utilisateur vient de tests/conftest.py)
     client.force_login(creer_utilisateur(role))
 
     # Agir : il ouvre la liste des livres
     reponse = client.get(URL_LISTE)
-    contenu = reponse.content.decode()   # le HTML de la page, en texte
+    contenu = reponse.content.decode()  # le HTML de la page, en texte
 
     # Vérifier : la page s'affiche...
     assert reponse.status_code == 200
@@ -130,12 +130,14 @@ def test_visiteur_non_connecte_est_redirige(client, db):
 @pytest.mark.parametrize(
     "role, code_attendu, livre_cree",
     [
-        ("ADMIN", 302, True),            # créé, puis redirigé vers la liste
-        ("BIBLIOTHECAIRE", 302, True),   # idem
-        ("ADHERENT", 403, False),        # refusé, et RIEN n'est créé
+        ("ADMIN", 302, True),  # créé, puis redirigé vers la liste
+        ("BIBLIOTHECAIRE", 302, True),  # idem
+        ("ADHERENT", 403, False),  # refusé, et RIEN n'est créé
     ],
 )
-def test_creation_selon_le_role(client, creer_utilisateur, goscinny, role, code_attendu, livre_cree):
+def test_creation_selon_le_role(
+    client, creer_utilisateur, goscinny, role, code_attendu, livre_cree
+):
     client.force_login(creer_utilisateur(role))
 
     # Agir : il remplit le formulaire (avec Goscinny comme auteur) et valide
@@ -170,9 +172,9 @@ def test_isbn_mal_forme_refuse_avec_message(client, creer_utilisateur, goscinny)
     #  testerait pas ce qu'on veut)
     reponse = client.post(URL_CREATION, donnees_livre([goscinny], isbn="978207061276X"))
 
-    assert reponse.status_code == 200                     # formulaire réaffiché
-    assert Livre.objects.count() == 0                     # rien n'est créé
-    assert "13 chiffres" in reponse.content.decode()      # notre message est visible
+    assert reponse.status_code == 200  # formulaire réaffiché
+    assert Livre.objects.count() == 0  # rien n'est créé
+    assert "13 chiffres" in reponse.content.decode()  # notre message est visible
 
 
 def test_isbn_deja_utilise_refuse(client, creer_utilisateur, asterix, goscinny):
@@ -195,8 +197,8 @@ def test_au_moins_un_auteur_obligatoire(client, creer_utilisateur):
     # Agir : aucun auteur coché -> liste vide []
     reponse = client.post(URL_CREATION, donnees_livre([]))
 
-    assert reponse.status_code == 200      # formulaire réaffiché (erreur)
-    assert Livre.objects.count() == 0      # rien n'est créé
+    assert reponse.status_code == 200  # formulaire réaffiché (erreur)
+    assert Livre.objects.count() == 0  # rien n'est créé
 
 
 # ======================================================================
@@ -210,12 +212,14 @@ def test_modification_par_bibliothecaire(client, creer_utilisateur, asterix, gos
     #  en gardant le titre et l'ISBN d'Astérix)
     reponse = client.post(
         url_modification(asterix),
-        donnees_livre([goscinny], titre="Astérix le Gaulois", isbn=ISBN_ASTERIX, nb_exemplaires="5"),
+        donnees_livre(
+            [goscinny], titre="Astérix le Gaulois", isbn=ISBN_ASTERIX, nb_exemplaires="5"
+        ),
     )
 
-    assert reponse.status_code == 302                 # succès -> redirection
-    asterix.refresh_from_db()                         # relire la base
-    assert asterix.nb_exemplaires == 5                # le changement est réel
+    assert reponse.status_code == 302  # succès -> redirection
+    asterix.refresh_from_db()  # relire la base
+    assert asterix.nb_exemplaires == 5  # le changement est réel
 
 
 def test_modification_refusee_a_adherent(client, creer_utilisateur, asterix, goscinny):
@@ -227,9 +231,9 @@ def test_modification_refusee_a_adherent(client, creer_utilisateur, asterix, gos
         donnees_livre([goscinny], titre="Pirate", isbn=ISBN_ASTERIX),
     )
 
-    assert reponse.status_code == 403                 # ce que le site DIT
+    assert reponse.status_code == 403  # ce que le site DIT
     asterix.refresh_from_db()
-    assert asterix.titre == "Astérix le Gaulois"      # ce que le site a FAIT : rien
+    assert asterix.titre == "Astérix le Gaulois"  # ce que le site a FAIT : rien
 
 
 # ======================================================================
@@ -239,16 +243,16 @@ def test_suppression_par_bibliothecaire(client, creer_utilisateur, asterix):
     client.force_login(creer_utilisateur("BIBLIOTHECAIRE"))
     reponse = client.post(url_suppression(asterix))
 
-    assert reponse.status_code == 302                          # succès
-    assert not Livre.objects.filter(pk=asterix.pk).exists()    # le livre n'existe plus
+    assert reponse.status_code == 302  # succès
+    assert not Livre.objects.filter(pk=asterix.pk).exists()  # le livre n'existe plus
 
 
 def test_suppression_refusee_a_adherent(client, creer_utilisateur, asterix):
     client.force_login(creer_utilisateur("ADHERENT"))
     reponse = client.post(url_suppression(asterix))
 
-    assert reponse.status_code == 403                          # interdit
-    assert Livre.objects.filter(pk=asterix.pk).exists()        # le livre est toujours là
+    assert reponse.status_code == 403  # interdit
+    assert Livre.objects.filter(pk=asterix.pk).exists()  # le livre est toujours là
 
 
 def test_supprimer_un_livre_garde_ses_auteurs(client, creer_utilisateur, asterix, goscinny):

@@ -37,9 +37,9 @@ def test_superutilisateur_a_le_role_admin(superadmin):
 # Règle 2 : l'admin peut gérer les utilisateurs dans /admin,
 # et le rôle y apparaît (pour pouvoir le modifier).
 def test_admin_peut_gerer_les_utilisateurs_et_leur_role(client, superadmin):
-    client.force_login(superadmin)                      # Préparer : l'admin est connecté
-    reponse = client.get(URL_ADMIN_UTILISATEURS)        # Agir : il ouvre la page
-    assert reponse.status_code == 200                   # Vérifier : elle s'affiche...
-    assert "rôle" in reponse.content.decode().lower()   # ...avec la colonne "rôle"
+    client.force_login(superadmin)  # Préparer : l'admin est connecté
+    reponse = client.get(URL_ADMIN_UTILISATEURS)  # Agir : il ouvre la page
+    assert reponse.status_code == 200  # Vérifier : elle s'affiche...
+    assert "rôle" in reponse.content.decode().lower()  # ...avec la colonne "rôle"
     # content.decode() = le HTML de la page en texte
     # .lower()         = tout en minuscules ("Rôle" ou "rôle" sont trouvés)

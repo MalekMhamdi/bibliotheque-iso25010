@@ -13,8 +13,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from catalogue.models import Livre
-from prets.models import Pret
 from prets import services
+from prets.models import Pret
 from prets.services import RegleMetierError
 
 pytestmark = pytest.mark.django_db
