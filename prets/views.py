@@ -1,3 +1,4 @@
+
 """Vues des prêts (EF-06) : aucune règle métier ici, seulement des appels aux services."""
 
 from datetime import date
@@ -67,7 +68,7 @@ def pret_remettre(request, pk):
     pret = get_object_or_404(Pret, pk=pk)
     _executer(
         request,
-        lambda: services.remettre(pret, aujourd_hui=date.today()),
+        lambda: services.remettre(pret, aujourd_hui=date.today(), acteur=request.user),
         "Livre remis à l'adhérent.",
     )
     return redirect("pret_liste")
@@ -79,7 +80,7 @@ def pret_rendre(request, pk):
     pret = get_object_or_404(Pret, pk=pk)
     _executer(
         request,
-        lambda: services.rendre(pret, aujourd_hui=date.today()),
+        lambda: services.rendre(pret, aujourd_hui=date.today(), acteur=request.user),
         "Retour enregistré.",
     )
     return redirect("pret_liste")
@@ -92,5 +93,9 @@ def pret_annuler(request, pk):
     est_adherent = request.user.role == "ADHERENT"
     if est_adherent and pret.utilisateur_id != request.user.pk:
         raise PermissionDenied  # un adhérent n'annule que SES prêts
-    _executer(request, lambda: services.annuler(pret), "Réservation annulée.")
+    _executer(
+        request,
+        lambda: services.annuler(pret, acteur=request.user),
+        "Réservation annulée.",
+    )
     return redirect("mes_prets" if est_adherent else "pret_liste")
