@@ -9,6 +9,16 @@
   <header>
     <nav aria-label="Navigation principale">
       <a href="{% url 'accueil' %}">📚 Bibliothèque</a>
+      {% if user.is_authenticated %}
+        {# Liens pour TOUS les utilisateurs connectés #}
+        <a href="{% url 'livre_liste' %}">Livres</a>
+        <a href="{% url 'auteur_liste' %}">Auteurs</a>
+
+        {# Lien réservé à l'ADMIN (les autres auraient un 403) #}
+        {% if user.role == "ADMIN" %}
+          <a href="{% url 'liste_utilisateurs' %}">Utilisateurs</a>
+        {% endif %}
+      {% endif %}
 
       {% if user.is_authenticated %}
         {# Connecté : on affiche son nom, son rôle et le bouton de déconnexion #}
