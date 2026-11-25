@@ -45,4 +45,4 @@ class Utilisateur(AbstractUser):
         return f"{self.username} ({self.get_role_display()})"
    
     penalite_impayee = models.DecimalField(
-    "pénalité impayée", max_digits=6, decimal_places=2, default=Decimal("0.00"))
+     "pénalité impayée", max_digits=6, decimal_places=2, default=Decimal("0.00"))  

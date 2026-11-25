@@ -54,7 +54,7 @@ def test_suppression_livre_avec_prets_refusee(client, creer_utilisateur, livre):
     Pret.objects.create(utilisateur=adherent, livre=livre)
 
     client.force_login(bibliothecaire)
-    url = reverse("catalogue:livre_suppression", args=[livre.pk])  # À ADAPTER
+    url = reverse("livre_suppression", args=[livre.pk])  # À ADAPTER
     reponse = client.post(url)
 
     assert reponse.status_code == 200                  # page réaffichée, pas de 500
