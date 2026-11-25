@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block titre %}Livres – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Livres</h1>
+
+  {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+    <p><a href="{% url 'livre_creation' %}">+ Ajouter un livre</a></p>
+  {% endif %}
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Titre</th>
+        <th scope="col">Auteur(s)</th>
+        <th scope="col">ISBN</th>
+        <th scope="col">Catégorie</th>
+        <th scope="col">Exemplaires</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for livre in livres %}
+        <tr>
+          <td>{{ livre.titre }}</td>
+          <td>{% for auteur in livre.auteurs.all %}{{ auteur.nom }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+          <td>{{ livre.isbn }}</td>
+          <td>{{ livre.categorie|default:"—" }}</td>
+          <td>{{ livre.nb_exemplaires }}</td>
+          <td>
+            {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+              <a href="{% url 'livre_modification' livre.pk %}">Modifier</a>
+              <a href="{% url 'livre_suppression' livre.pk %}">Supprimer</a>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">Aucun livre.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+    <nav aria-label="Pages">
+      {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Précédente</a>
+      {% endif %}
+      <span>Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Suivante →</a>
+      {% endif %}
+    </nav>
+  {% endif %}
+{% endblock %}

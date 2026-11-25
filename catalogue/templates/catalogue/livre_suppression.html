@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block titre %}Supprimer un livre – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Supprimer le livre</h1>
+  <p>Voulez-vous vraiment supprimer « {{ object.titre }} » ?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Oui, supprimer</button>
+    <a href="{% url 'livre_liste' %}">Annuler</a>
+  </form>
+{% endblock %}

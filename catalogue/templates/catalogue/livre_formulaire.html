@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block titre %}Livre – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>{% if object %}Modifier le livre{% else %}Nouveau livre{% endif %}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+    <a href="{% url 'livre_liste' %}">Annuler</a>
+  </form>
+{% endblock %}
