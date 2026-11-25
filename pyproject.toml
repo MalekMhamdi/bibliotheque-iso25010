@@ -3,6 +3,7 @@
 # ============================================================
 [tool.pytest.ini_options]
 
+
 # Indique à pytest-django où se trouvent les réglages de Django
 # (le fichier config/settings.py)
 DJANGO_SETTINGS_MODULE = "config.settings"
@@ -13,3 +14,6 @@ testpaths = ["tests"]
 
 # -v = "verbose" : affiche le nom de chaque test et son résultat
 addopts = "-v"
+[tool.coverage.run]
+source = ["comptes", "catalogue", "config"]
+omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "manage.py"]
