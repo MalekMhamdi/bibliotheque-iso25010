@@ -8,12 +8,12 @@ PLAFOND_PENALITE = Decimal("10.00")        # RM-03
 
 
 def date_retour_prevue(date_emprunt: date) -> date:
-    """RM-02 : date d'emprunt + 14 jours (timedelta gère mois et bissextiles)."""
+    """RM-02 : date d'emprunt + 14 jours."""
     return date_emprunt + timedelta(days=DUREE_PRET_JOURS)
 
 
 def jours_de_retard(date_prevue: date, date_effective: date) -> int:
-    """Nombre de jours de retard, jamais négatif (rendu en avance = 0)."""
+    """Nombre de jours de retard, jamais négatif."""
     return max(0, (date_effective - date_prevue).days)
 
 
