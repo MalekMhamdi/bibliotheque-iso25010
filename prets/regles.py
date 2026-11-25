@@ -20,3 +20,7 @@ def jours_de_retard(date_prevue: date, date_effective: date) -> int:
 def calculer_penalite(jours_retard: int) -> Decimal:
     """RM-03 : 0,50 EUR par jour, plafonnée à 10 EUR."""
     return min(jours_retard * PENALITE_PAR_JOUR, PLAFOND_PENALITE)
+
+def peut_reserver(compte_actif: bool, a_un_retard: bool, penalite_impayee: Decimal) -> bool:
+    """RM-04 : compte actif ET aucun prêt en retard ET pénalité impayée = 0."""
+    return compte_actif and not a_un_retard and penalite_impayee == 0
