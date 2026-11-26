@@ -13,13 +13,14 @@ On ajoute seulement : le modèle, les champs, la page HTML, et le VIGILE.
 
 # reverse_lazy : retrouve une adresse à partir de son NOM (défini dans urls.py)
 from django.contrib import messages
-from django.db.models import ProtectedError, Q
+from django.db.models import ProtectedError
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
 from audit.models import JournalAudit
 from audit.services import journaliser
 from catalogue.models import Auteur, Livre
+from catalogue.recherche import rechercher_livres
 from comptes.permissions import RoleRequisMixin  # le vigile des vues classes
 
 # --- Qui a le droit de quoi (tableau des droits du cadrage) ------------
@@ -117,17 +118,7 @@ class LivreListe(RoleRequisMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        livres = Livre.objects.prefetch_related("auteurs")
-        q = self.request.GET.get("q", "").strip()
-        if q:
-            # EF-08 : titre, auteur, catégorie (contient) ; ISBN (exact)
-            livres = livres.filter(
-                Q(titre__icontains=q)
-                | Q(auteurs__nom__icontains=q)
-                | Q(isbn=q)
-                | Q(categorie__icontains=q)
-            ).distinct()  # un livre à 2 auteurs ne doit apparaître qu'une fois
-        return livres
+        return rechercher_livres(self.request.GET.get("q", ""))
 
     def get_context_data(self, **kwargs):
         contexte = super().get_context_data(**kwargs)
