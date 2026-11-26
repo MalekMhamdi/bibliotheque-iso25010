@@ -1,22 +1,31 @@
-# ============================================================
+﻿# ============================================================
 # Configuration de pytest (l'outil qui lance les tests)
 # ============================================================
 [tool.pytest.ini_options]
-
-
 # Indique à pytest-django où se trouvent les réglages de Django
-# (le fichier config/settings.py)
 DJANGO_SETTINGS_MODULE = "config.settings"
 
 # Dossier où pytest cherche les fichiers de test (test_*.py)
 testpaths = ["tests"]
 
-
 # -v = "verbose" : affiche le nom de chaque test et son résultat
 addopts = "-v"
+
+# Ignore un avertissement Django sans importance
+filterwarnings = [
+    "ignore:No directory at:UserWarning:django.core.handlers.base",
+]
+
+# ============================================================
+# Couverture de code (pytest-cov)
+# ============================================================
 [tool.coverage.run]
-source = ["comptes", "catalogue", "config"]
+source = ["comptes", "catalogue", "prets", "audit", "config"]
 omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "manage.py"]
+
+# ============================================================
+# Ruff (lint et format)
+# ============================================================
 [tool.ruff]
 line-length = 100
 target-version = "py312"
@@ -24,7 +33,3 @@ extend-exclude = ["*/migrations/*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
-
-filterwarnings = [
-    "ignore:No directory at:UserWarning:django.core.handlers.base",
-]
