@@ -12,21 +12,20 @@ On ajoute seulement : le modèle, les champs, la page HTML, et le VIGILE.
 """
 
 # reverse_lazy : retrouve une adresse à partir de son NOM (défini dans urls.py)
+from django.contrib import messages
+from django.db.models import ProtectedError, Q
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DeleteView, ListView, UpdateView
 
-from catalogue.models import Auteur, Livre
-from comptes.permissions import RoleRequisMixin   # le vigile des vues classes
-from django.contrib import messages
-from django.db.models import ProtectedError
 from audit.models import JournalAudit
 from audit.services import journaliser
-from django.db.models import ProtectedError, Q
+from catalogue.models import Auteur, Livre
+from comptes.permissions import RoleRequisMixin  # le vigile des vues classes
 
 # --- Qui a le droit de quoi (tableau des droits du cadrage) ------------
 # Définis UNE fois, réutilisés par toutes les vues.
-TOUS_LES_ROLES = ("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")   # lire
-GESTIONNAIRES = ("ADMIN", "BIBLIOTHECAIRE")                # créer, modifier, supprimer
+TOUS_LES_ROLES = ("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")  # lire
+GESTIONNAIRES = ("ADMIN", "BIBLIOTHECAIRE")  # créer, modifier, supprimer
 
 
 # ======================================================================
@@ -39,10 +38,10 @@ CHAMPS_AUTEUR = ["nom", "nationalite"]
 # R = READ : liste des auteurs
 # ⚠️ RoleRequisMixin à GAUCHE : le vigile passe AVANT la vue
 class AuteurListe(RoleRequisMixin, ListView):
-    roles_autorises = TOUS_LES_ROLES              # tous les rôles connectés
-    model = Auteur                                # quelle table lire
-    template_name = "catalogue/auteur_liste.html" # quelle page HTML
-    context_object_name = "auteurs"               # nom de la liste dans le HTML
+    roles_autorises = TOUS_LES_ROLES  # tous les rôles connectés
+    model = Auteur  # quelle table lire
+    template_name = "catalogue/auteur_liste.html"  # quelle page HTML
+    context_object_name = "auteurs"  # nom de la liste dans le HTML
 
 
 # C = CREATE : ajouter un auteur
@@ -56,7 +55,7 @@ class AuteurCreation(RoleRequisMixin, CreateView):
     def form_valid(self, form):
         reponse = super().form_valid(form)
         journaliser(self.request.user, JournalAudit.Action.CREATION, self.object)
-        return reponse    # après succès -> 302 vers la liste
+        return reponse  # après succès -> 302 vers la liste
 
 
 # U = UPDATE : modifier un auteur
@@ -83,10 +82,9 @@ class AuteurSuppression(RoleRequisMixin, DeleteView):
     def form_valid(self, form):
         pk = self.object.pk  # après delete(), pk vaut None
         reponse = super().form_valid(form)
-        journaliser(
-            self.request.user, JournalAudit.Action.SUPPRESSION, self.object, entite_id=pk
-        )
+        journaliser(self.request.user, JournalAudit.Action.SUPPRESSION, self.object, entite_id=pk)
         return reponse
+
 
 # ======================================================================
 # CRUD DES LIVRES (EF-03) : même principe que les auteurs
@@ -150,18 +148,21 @@ class LivreCreation(RoleRequisMixin, CreateView):
         journaliser(self.request.user, JournalAudit.Action.CREATION, self.object)
         return reponse
 
+
 # U = UPDATE : modifier un livre
 class LivreModification(RoleRequisMixin, UpdateView):
     roles_autorises = GESTIONNAIRES
     model = Livre
     fields = CHAMPS_LIVRE
-    template_name = "catalogue/livre_formulaire.html"    # même page que la création
+    template_name = "catalogue/livre_formulaire.html"  # même page que la création
     success_url = reverse_lazy("livre_liste")
 
     def form_valid(self, form):
         reponse = super().form_valid(form)
         journaliser(self.request.user, JournalAudit.Action.MODIFICATION, self.object)
         return reponse
+
+
 # D = DELETE : supprimer un livre
 # (ses auteurs ne sont PAS supprimés : seul le LIEN livre <-> auteur
 #  disparaît de la table de liaison ; Goscinny reste en base)
@@ -170,6 +171,7 @@ class LivreSuppression(RoleRequisMixin, DeleteView):
     model = Livre
     template_name = "catalogue/livre_suppression.html"
     success_url = reverse_lazy("livre_liste")
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         try:
@@ -182,4 +184,4 @@ class LivreSuppression(RoleRequisMixin, DeleteView):
         pk = self.object.pk  # après delete(), pk vaut None
         reponse = super().form_valid(form)  # lève ProtectedError si des prêts existent
         journaliser(self.request.user, JournalAudit.Action.SUPPRESSION, self.object, entite_id=pk)
-        return reponse    
+        return reponse

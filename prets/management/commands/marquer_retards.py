@@ -3,6 +3,7 @@
 Utilisation : python manage.py marquer_retards
 (à planifier une fois par jour en production)
 """
+
 from datetime import date
 
 from django.core.management.base import BaseCommand

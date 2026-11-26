@@ -1,4 +1,5 @@
 """EF-10 : journal d'audit (qui, quoi, quand)."""
+
 from datetime import date, timedelta
 
 import pytest
@@ -221,6 +222,7 @@ def test_lien_audit_dans_le_menu_pour_l_admin_seulement(client, creer_utilisateu
     client.force_login(creer_utilisateur("BIBLIOTHECAIRE"))
     assert f'href="{url}"' not in client.get("/").content.decode()
 
+
 def test_creer_un_auteur_est_journalise(client, creer_utilisateur):
     biblio = creer_utilisateur("BIBLIOTHECAIRE")
     client.force_login(biblio)
@@ -246,4 +248,4 @@ def test_supprimer_un_auteur_est_journalise(client, creer_utilisateur):
     entree = JournalAudit.objects.get()
     assert entree.action == A.SUPPRESSION
     assert entree.entite == "Auteur"
-    assert entree.entite_id == pk    
+    assert entree.entite_id == pk
