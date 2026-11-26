@@ -6,7 +6,7 @@ services:
     environment:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-a-changer-en-production}
       DJANGO_DEBUG: "0"
-      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1"
+      DJANGO_ALLOWED_HOSTS: "localhost,127.0.0.1,host.docker.internal"
     volumes:
       - donnees:/data
     healthcheck:
