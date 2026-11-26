@@ -40,6 +40,7 @@ def pret_reserver(request, livre_pk):
 
 @role_requis("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")
 def mes_prets(request):
+    services.marquer_retards(date.today())  
     prets = Pret.objects.filter(utilisateur=request.user).select_related("livre")
     prets = prets.order_by("-date_reservation", "-pk")
     return render(request, "prets/mes_prets.html", {"prets": prets})
@@ -47,6 +48,7 @@ def mes_prets(request):
 
 @role_requis("ADMIN", "BIBLIOTHECAIRE")
 def pret_liste(request):
+    services.marquer_retards(date.today())  
     statut = request.GET.get("statut", "")
     prets = Pret.objects.select_related("livre", "utilisateur")
     if statut in Pret.Statut.values:
@@ -102,6 +104,7 @@ def pret_annuler(request, pk):
 
 @role_requis("ADMIN", "BIBLIOTHECAIRE")
 def tableau_de_bord(request):
+    services.marquer_retards(date.today())  
     debut_txt = request.GET.get("debut", "")
     fin_txt = request.GET.get("fin", "")
     def _date_ou_none(texte):
@@ -118,3 +121,4 @@ def tableau_de_bord(request):
         "fin": fin_txt,
     }
     return render(request, "prets/tableau_de_bord.html", contexte)
+
