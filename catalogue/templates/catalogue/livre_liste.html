@@ -5,6 +5,12 @@
 {% block contenu %}
   <h1>Livres</h1>
 
+  <form method="get" action="{% url 'livre_liste' %}" role="search">
+    <label for="recherche">Rechercher (titre, auteur, ISBN, catégorie)</label>
+    <input type="search" id="recherche" name="q" value="{{ q }}">
+    <button type="submit">Rechercher</button>
+  </form>
+
   {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
     <p><a href="{% url 'livre_creation' %}">+ Ajouter un livre</a></p>
   {% endif %}
@@ -28,7 +34,7 @@
           <td>{{ livre.isbn }}</td>
           <td>{{ livre.categorie|default:"—" }}</td>
           <td>{{ livre.nb_exemplaires }}</td>
-                    <td>
+          <td>
             {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
               <a href="{% url 'livre_modification' livre.pk %}">Modifier</a>
               <a href="{% url 'livre_suppression' livre.pk %}">Supprimer</a>
@@ -42,7 +48,7 @@
           </td>
         </tr>
       {% empty %}
-        <tr><td colspan="6">Aucun livre.</td></tr>
+        <tr><td colspan="6">Aucun livre{% if q %} ne correspond à « {{ q }} »{% endif %}.</td></tr>
       {% endfor %}
     </tbody>
   </table>
@@ -50,11 +56,11 @@
   {% if is_paginated %}
     <nav aria-label="Pages">
       {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}">← Précédente</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}">← Précédente</a>
       {% endif %}
       <span>Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}</span>
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Suivante →</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}">Suivante →</a>
       {% endif %}
     </nav>
   {% endif %}
