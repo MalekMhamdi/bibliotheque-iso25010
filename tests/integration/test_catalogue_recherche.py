@@ -26,7 +26,8 @@ def _livre(titre, categorie="Roman", auteurs=("Auteur Test",), isbn=None):
 
 
 def _chercher(client, creer_utilisateur, **params):
-    client.force_login(creer_utilisateur("ADHERENT"))
+    if "_auth_user_id" not in client.session:
+        client.force_login(creer_utilisateur("ADHERENT"))
     return client.get(reverse("livre_liste"), params).content.decode()
 
 

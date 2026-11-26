@@ -21,6 +21,7 @@ from django.contrib import messages
 from django.db.models import ProtectedError
 from audit.models import JournalAudit
 from audit.services import journaliser
+from django.db.models import ProtectedError, Q
 
 # --- Qui a le droit de quoi (tableau des droits du cadrage) ------------
 # Définis UNE fois, réutilisés par toutes les vues.
@@ -118,15 +119,22 @@ class LivreListe(RoleRequisMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        """Quels livres afficher, et comment les charger.
+        livres = Livre.objects.prefetch_related("auteurs")
+        q = self.request.GET.get("q", "").strip()
+        if q:
+            # EF-08 : titre, auteur, catégorie (contient) ; ISBN (exact)
+            livres = livres.filter(
+                Q(titre__icontains=q)
+                | Q(auteurs__nom__icontains=q)
+                | Q(isbn=q)
+                | Q(categorie__icontains=q)
+            ).distinct()  # un livre à 2 auteurs ne doit apparaître qu'une fois
+        return livres
 
-        prefetch_related("auteurs") : charge les auteurs de TOUS les livres
-        de la page en UNE seule requête supplémentaire.
-          sans : 1 requête pour les livres + 1 par livre pour ses auteurs
-                 = 21 requêtes pour 20 livres
-          avec : 2 requêtes seulement   -> plus rapide (EQ-02)
-        """
-        return Livre.objects.prefetch_related("auteurs")
+    def get_context_data(self, **kwargs):
+        contexte = super().get_context_data(**kwargs)
+        contexte["q"] = self.request.GET.get("q", "").strip()
+        return contexte
 
 
 # C = CREATE : ajouter un livre
