@@ -3,7 +3,6 @@
 # ============================================================
 [tool.pytest.ini_options]
 # Indique à pytest-django où se trouvent les réglages de Django
-# (le fichier config/settings.py)
 DJANGO_SETTINGS_MODULE = "config.settings"
 
 # Dossier où pytest cherche les fichiers de test (test_*.py)
@@ -21,7 +20,7 @@ filterwarnings = [
 # Couverture de code (pytest-cov)
 # ============================================================
 [tool.coverage.run]
-source = ["comptes", "catalogue", "prets", "config"]
+source = ["comptes", "catalogue", "prets", "audit", "config"]
 omit = ["*/migrations/*", "config/asgi.py", "config/wsgi.py", "manage.py"]
 
 # ============================================================

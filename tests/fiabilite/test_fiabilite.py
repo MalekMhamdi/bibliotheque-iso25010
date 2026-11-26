@@ -1,4 +1,5 @@
 """EQ-05 : fiabilité (rollback, pas d'erreur 500, récupération)."""
+
 from itertools import count
 
 import pytest
@@ -17,8 +18,11 @@ _isbn = count(9785000000001)
 
 def _livre(**champs):
     return Livre.objects.create(
-        titre="Livre fiabilité", isbn=str(next(_isbn)), categorie="Roman",
-        nb_exemplaires=1, **champs,
+        titre="Livre fiabilité",
+        isbn=str(next(_isbn)),
+        categorie="Roman",
+        nb_exemplaires=1,
+        **champs,
     )
 
 
@@ -47,7 +51,9 @@ def test_panne_du_journal_annule_le_retour_et_la_penalite(creer_utilisateur, mon
 
     adherent = creer_utilisateur("ADHERENT")
     pret = Pret.objects.create(
-        utilisateur=adherent, livre=_livre(), statut=Pret.Statut.EN_COURS,
+        utilisateur=adherent,
+        livre=_livre(),
+        statut=Pret.Statut.EN_COURS,
         date_emprunt=date.today() - timedelta(days=20),
         date_retour_prevue=date.today() - timedelta(days=6),
     )
@@ -112,8 +118,13 @@ def test_formulaire_invalide_reaffiche_la_page(client, creer_utilisateur):
 
     reponse = client.post(
         reverse("livre_creation"),
-        {"titre": "X", "isbn": "123", "categorie": "Roman",
-         "nb_exemplaires": 1, "auteurs": [auteur.pk]},
+        {
+            "titre": "X",
+            "isbn": "123",
+            "categorie": "Roman",
+            "nb_exemplaires": 1,
+            "auteurs": [auteur.pk],
+        },
     )
 
     assert reponse.status_code == 200

@@ -1,4 +1,5 @@
 """EF-09 : tableau de bord (chiffres exacts, top 5, période, droits)."""
+
 from datetime import date
 from decimal import Decimal
 from itertools import count
@@ -74,8 +75,12 @@ def test_top_5_dans_le_bon_ordre_et_limite_a_5():
 
     top = calculer_statistiques()["top_livres"]
 
-    assert [(l.titre, l.nb_prets) for l in top] == [
-        ("L7", 7), ("L2", 6), ("L4", 5), ("L6", 4), ("L3", 3),
+    assert [(livre.titre, livre.nb_prets) for livre in top] == [
+        ("L7", 7),
+        ("L2", 6),
+        ("L4", 5),
+        ("L6", 4),
+        ("L3", 3),
     ]
 
 

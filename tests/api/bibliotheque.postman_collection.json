@@ -1,0 +1,92 @@
+{
+  "info": {
+    "name": "Bibliothèque API (EQ-03)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000" },
+    { "key": "loginPath", "value": "/comptes/connexion/" },
+    { "key": "csrf", "value": "" },
+    { "key": "livreId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1. Non connecté : liste refusée (403)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('403 sans connexion', () => pm.response.to.have.status(403));",
+        "pm.test('aucune donnée de livre dans la réponse', () => pm.expect(pm.response.text()).to.not.include('isbn'));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/" }
+    },
+    {
+      "name": "2. Page de connexion (récupère le jeton CSRF)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('page de connexion 200', () => pm.response.to.have.status(200));",
+        "const m = pm.response.text().match(/name=\"csrfmiddlewaretoken\" value=\"([^\"]+)\"/);",
+        "pm.test('jeton CSRF trouvé', () => pm.expect(m).to.not.be.null);",
+        "if (m) { pm.collectionVariables.set('csrf', m[1]); }"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}{{loginPath}}" }
+    },
+    {
+      "name": "3. Connexion (adhérent)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('connexion puis redirection vers une page 200', () => pm.response.to.have.status(200));"
+      ] } }],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Referer", "value": "{{baseUrl}}{{loginPath}}" }],
+        "body": { "mode": "urlencoded", "urlencoded": [
+          { "key": "username", "value": "{{username}}" },
+          { "key": "password", "value": "{{password}}" },
+          { "key": "csrfmiddlewaretoken", "value": "{{csrf}}" }
+        ] },
+        "url": "{{baseUrl}}{{loginPath}}"
+      }
+    },
+    {
+      "name": "4. Liste des livres (200, JSON, pagination)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', () => pm.response.to.have.status(200));",
+        "pm.test('Content-Type JSON', () => pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json'));",
+        "const j = pm.response.json();",
+        "pm.test('champs de pagination présents', () => { pm.expect(j).to.have.all.keys('count', 'next', 'previous', 'results'); });",
+        "pm.test('20 livres par page', () => pm.expect(j.results.length).to.eql(20));",
+        "pm.test('types des champs', () => { const l = j.results[0]; pm.expect(l.id).to.be.a('number'); pm.expect(l.titre).to.be.a('string'); pm.expect(l.isbn).to.be.a('string'); pm.expect(l.auteurs).to.be.an('array'); });",
+        "pm.collectionVariables.set('livreId', j.results[0].id);"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/" }
+    },
+    {
+      "name": "5. Page 2 de la liste",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', () => pm.response.to.have.status(200));",
+        "pm.test('page 2 non vide, lien précédent présent', () => { const j = pm.response.json(); pm.expect(j.results.length).to.be.above(0); pm.expect(j.previous).to.not.be.null; });"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/?page=2" }
+    },
+    {
+      "name": "6. Détail d'un livre (200)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', () => pm.response.to.have.status(200));",
+        "pm.test('même identifiant', () => pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get('livreId'))));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/{{livreId}}/" }
+    },
+    {
+      "name": "7. Livre inexistant (404)",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('404', () => pm.response.to.have.status(404));"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/99999999/" }
+    },
+    {
+      "name": "8. Recherche ?q= sans résultat",
+      "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": [
+        "pm.test('200', () => pm.response.to.have.status(200));",
+        "pm.test('0 résultat', () => { const j = pm.response.json(); pm.expect(j.count).to.eql(0); pm.expect(j.results).to.eql([]); });"
+      ] } }],
+      "request": { "method": "GET", "header": [], "url": "{{baseUrl}}/api/livres/?q=zzzintrouvable" }
+    }
+  ]
+}

@@ -14,26 +14,81 @@ from catalogue.models import Auteur, Livre
 TAILLE_PAQUET = 500  # nombre de livres insérés par requête
 
 CATEGORIES = [
-    "Roman", "Science-fiction", "Policier", "Histoire", "Biographie",
-    "Poésie", "Théâtre", "Jeunesse", "Bande dessinée", "Science",
-    "Philosophie", "Cuisine", "Voyage", "Informatique", "Art",
+    "Roman",
+    "Science-fiction",
+    "Policier",
+    "Histoire",
+    "Biographie",
+    "Poésie",
+    "Théâtre",
+    "Jeunesse",
+    "Bande dessinée",
+    "Science",
+    "Philosophie",
+    "Cuisine",
+    "Voyage",
+    "Informatique",
+    "Art",
 ]
 PRENOMS = [
-    "Jean", "Marie", "Pierre", "Sophie", "Ahmed", "Fatma", "Karim", "Leila",
-    "Victor", "Alice", "Omar", "Nadia", "Paul", "Claire", "Samir", "Hela",
+    "Jean",
+    "Marie",
+    "Pierre",
+    "Sophie",
+    "Ahmed",
+    "Fatma",
+    "Karim",
+    "Leila",
+    "Victor",
+    "Alice",
+    "Omar",
+    "Nadia",
+    "Paul",
+    "Claire",
+    "Samir",
+    "Hela",
 ]
 NOMS = [
-    "Martin", "Bernard", "Dubois", "Thomas", "Robert", "Richard", "Petit",
-    "Durand", "Leroy", "Moreau", "Ben Salah", "Trabelsi", "Haddad", "Gharbi",
-    "Mansouri", "Bouazizi",
+    "Martin",
+    "Bernard",
+    "Dubois",
+    "Thomas",
+    "Robert",
+    "Richard",
+    "Petit",
+    "Durand",
+    "Leroy",
+    "Moreau",
+    "Ben Salah",
+    "Trabelsi",
+    "Haddad",
+    "Gharbi",
+    "Mansouri",
+    "Bouazizi",
 ]
 MOTS_A = [
-    "Le secret", "La maison", "Le voyage", "L'histoire", "Les enfants",
-    "Le jardin", "La mémoire", "Le dernier", "La première", "Les ombres",
+    "Le secret",
+    "La maison",
+    "Le voyage",
+    "L'histoire",
+    "Les enfants",
+    "Le jardin",
+    "La mémoire",
+    "Le dernier",
+    "La première",
+    "Les ombres",
 ]
 MOTS_B = [
-    "du temps", "de la mer", "des étoiles", "oubliée", "perdu", "du désert",
-    "de la nuit", "du village", "des anciens", "du futur",
+    "du temps",
+    "de la mer",
+    "des étoiles",
+    "oubliée",
+    "perdu",
+    "du désert",
+    "de la nuit",
+    "du village",
+    "des anciens",
+    "du futur",
 ]
 
 
@@ -57,10 +112,12 @@ class Command(BaseCommand):
 
         Liaison = Livre.auteurs.through
         for debut in range(0, nb_livres, TAILLE_PAQUET):
-            isbns_paquet = isbns[debut:debut + TAILLE_PAQUET]
+            isbns_paquet = isbns[debut : debut + TAILLE_PAQUET]
             Livre.objects.bulk_create(
-                [self._nouveau_livre(i, isbn, hasard)
-                 for i, isbn in enumerate(isbns_paquet, start=debut)]
+                [
+                    self._nouveau_livre(i, isbn, hasard)
+                    for i, isbn in enumerate(isbns_paquet, start=debut)
+                ]
             )
             ids = Livre.objects.filter(isbn__in=isbns_paquet).values_list("pk", flat=True)
             Liaison.objects.bulk_create(
@@ -73,9 +130,13 @@ class Command(BaseCommand):
         """Complète jusqu'à nb_voulus auteurs, puis renvoie leurs identifiants."""
         manquants = max(0, nb_voulus - Auteur.objects.count())
         Auteur.objects.bulk_create(
-            [Auteur(nom=f"{hasard.choice(PRENOMS)} {hasard.choice(NOMS)}",
-                    nationalite="Tunisienne" if hasard.random() < 0.3 else "Française")
-             for _ in range(manquants)]
+            [
+                Auteur(
+                    nom=f"{hasard.choice(PRENOMS)} {hasard.choice(NOMS)}",
+                    nationalite="Tunisienne" if hasard.random() < 0.3 else "Française",
+                )
+                for _ in range(manquants)
+            ]
         )
         return list(Auteur.objects.values_list("pk", flat=True))
 
