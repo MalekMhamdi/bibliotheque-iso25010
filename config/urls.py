@@ -31,4 +31,5 @@ urlpatterns = [
     path("prets/", include("prets.urls")),
     path("audit/", include("audit.urls")),
     path("tableau-de-bord/", tableau_de_bord, name="tableau_de_bord"),
+    path("api/", include("api.urls")),
 ]
