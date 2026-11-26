@@ -65,3 +65,54 @@ def test_pagination_20_par_page(client, creer_utilisateur):
     assert page1["count"] == 25
     assert len(page1["results"]) == 20
     assert len(client.get(URL_LISTE + "?page=2").json()["results"]) == 5
+    # --- Recherche ?q= (EF-08) ---------------------------------------------
+
+
+@pytest.fixture
+def catalogue_recherche():
+    hugo = Auteur.objects.create(nom="Victor Hugo")
+    dumas = Auteur.objects.create(nom="Alexandre Dumas")
+    miserables = Livre.objects.create(
+        titre="Les Misérables", isbn="9782070409228", categorie="Roman"
+    )
+    miserables.auteurs.add(hugo)
+    duo = Livre.objects.create(titre="Livre à deux mains", isbn="9782070409235", categorie="Essai")
+    duo.auteurs.add(hugo, dumas)
+    Livre.objects.create(titre="Dictionnaire", isbn="9782070409242", categorie="Référence")
+
+
+@pytest.mark.parametrize(
+    "q, attendus",
+    [
+        ("misérables", {"Les Misérables"}),  # par titre
+        ("dumas", {"Livre à deux mains"}),  # par auteur
+        ("9782070409242", {"Dictionnaire"}),  # par ISBN exact
+        ("Référence", {"Dictionnaire"}),  # par catégorie
+    ],
+)
+def test_recherche_api(client, creer_utilisateur, catalogue_recherche, q, attendus):
+    client.force_login(creer_utilisateur("ADHERENT"))
+    donnees = client.get(URL_LISTE, {"q": q}).json()
+    assert {item["titre"] for item in donnees["results"]} == attendus
+
+
+def test_recherche_api_aucun_resultat(client, creer_utilisateur, catalogue_recherche):
+    client.force_login(creer_utilisateur("ADHERENT"))
+    donnees = client.get(URL_LISTE, {"q": "zzzintrouvable"}).json()
+    assert donnees["count"] == 0
+    assert donnees["results"] == []
+
+
+def test_recherche_api_livre_a_deux_auteurs_une_seule_fois(
+    client, creer_utilisateur, catalogue_recherche
+):
+    """Hugo est auteur de 2 livres, dont un à 2 auteurs : pas de doublon."""
+    client.force_login(creer_utilisateur("ADHERENT"))
+    donnees = client.get(URL_LISTE, {"q": "hugo"}).json()
+    titres = [item["titre"] for item in donnees["results"]]
+    assert sorted(titres) == ["Les Misérables", "Livre à deux mains"]
+    assert donnees["count"] == 2
+
+
+def test_recherche_api_non_connecte_refuse(client, catalogue_recherche):
+    assert client.get(URL_LISTE, {"q": "hugo"}).status_code == 403
