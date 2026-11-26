@@ -20,6 +20,7 @@ from django.urls import include, path
 from django.views.generic import TemplateView
 
 from config.views import health
+from prets.views import tableau_de_bord
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -29,5 +30,6 @@ urlpatterns = [
     path("catalogue/", include("catalogue.urls")),
     path("prets/", include("prets.urls")),
     path("audit/", include("audit.urls")),
+    path("tableau-de-bord/",tableau_de_bord, name="tableau_de_bord")
 
 ]

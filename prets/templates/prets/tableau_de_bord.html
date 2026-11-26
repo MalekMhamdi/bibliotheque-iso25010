@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load l10n %}
+
+{% block titre %}Tableau de bord – Bibliothèque{% endblock %}
+
+{% block contenu %}
+  <h1>Tableau de bord</h1>
+
+  <form method="get" action="{% url 'tableau_de_bord' %}">
+    <label for="debut">Du</label>
+    <input type="date" id="debut" name="debut" value="{{ debut }}">
+    <label for="fin">au</label>
+    <input type="date" id="fin" name="fin" value="{{ fin }}">
+    <button type="submit">Filtrer</button>
+  </form>
+
+  <ul>
+    <li>Prêts actifs : <strong>{{ stats.nb_actifs }}</strong></li>
+    <li>Prêts en retard : <strong>{{ stats.nb_retard }}</strong></li>
+    <li>Total des pénalités : <strong>{{ stats.total_penalites|floatformat:2 }} €</strong></li>
+  </ul> 
+  <h2>Top 5 des livres les plus empruntés</h2>
+  <ol>
+    {% for livre in stats.top_livres %}
+      <li>{{ livre.titre }} ({{ livre.nb_prets }})</li>
+    {% empty %}
+      <li>Aucun prêt sur la période.</li>
+    {% endfor %}
+  </ol>
+{% endblock %}
