@@ -18,6 +18,7 @@
         {# Lien réservé au personnel (les adhérents auraient un 403) #}
         {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
           <a href="{% url 'pret_liste' %}">Prêts</a>
+          <a href="{% url 'tableau_de_bord' %}">Tableau de bord</a>
         {% endif %}
 
         {# Lien réservé à l'ADMIN (les autres auraient un 403) #}

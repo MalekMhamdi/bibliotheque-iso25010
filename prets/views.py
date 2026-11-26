@@ -13,8 +13,8 @@ from comptes.permissions import role_requis
 from prets import services
 from prets.models import Pret
 from prets.services import RegleMetierError
-
-
+from prets.statistiques import calculer_statistiques
+from django.utils.dateparse import parse_date
 def _executer(request, action, message_succes):
     """Lance un service ; une erreur métier devient un message, pas une erreur 500."""
     try:
@@ -99,3 +99,22 @@ def pret_annuler(request, pk):
         "Réservation annulée.",
     )
     return redirect("mes_prets" if est_adherent else "pret_liste")
+
+@role_requis("ADMIN", "BIBLIOTHECAIRE")
+def tableau_de_bord(request):
+    debut_txt = request.GET.get("debut", "")
+    fin_txt = request.GET.get("fin", "")
+    def _date_ou_none(texte):
+        try:
+            return parse_date(texte) if texte else None
+        except ValueError:
+            return None
+    debut = _date_ou_none(debut_txt)
+    fin = _date_ou_none(fin_txt)
+    # parse_date lève ValueError pour une date impossible (ex. 2026-13-45)
+    contexte = {
+        "stats": calculer_statistiques(debut, fin),
+        "debut": debut_txt,
+        "fin": fin_txt,
+    }
+    return render(request, "prets/tableau_de_bord.html", contexte)
