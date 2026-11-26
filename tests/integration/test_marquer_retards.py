@@ -1,4 +1,5 @@
 """EF-07 : passage automatique des prêts EN_COURS en EN_RETARD."""
+
 from datetime import date, timedelta
 from io import StringIO
 from itertools import count
@@ -27,8 +28,11 @@ def _pret(statut, retour_prevu):
         titre=f"Livre {n}", isbn=str(next(_isbn)), categorie="Roman", nb_exemplaires=1
     )
     return Pret.objects.create(
-        utilisateur=utilisateur, livre=livre, statut=statut,
-        date_emprunt=retour_prevu - timedelta(days=14), date_retour_prevue=retour_prevu,
+        utilisateur=utilisateur,
+        livre=livre,
+        statut=statut,
+        date_emprunt=retour_prevu - timedelta(days=14),
+        date_retour_prevue=retour_prevu,
     )
 
 
@@ -78,4 +82,3 @@ def test_la_liste_des_prets_marque_les_retards(client, creer_utilisateur):
 
     pret.refresh_from_db()
     assert pret.statut == S.EN_RETARD
-    

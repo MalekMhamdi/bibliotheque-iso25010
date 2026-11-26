@@ -118,10 +118,7 @@ def test_livre_a_deux_auteurs_affiche_une_seule_fois(client, creer_utilisateur):
 def test_pagination_conserve_la_recherche(client, creer_utilisateur):
     """25 résultats (pagination à 20) : la page 2 garde le filtre q."""
     Livre.objects.bulk_create(
-        [
-            Livre(titre=f"Cible {i:02d}", isbn=str(next(_isbn)), nb_exemplaires=1)
-            for i in range(25)
-        ]
+        [Livre(titre=f"Cible {i:02d}", isbn=str(next(_isbn)), nb_exemplaires=1) for i in range(25)]
         + [
             Livre(titre=f"Hors-sujet {i:02d}", isbn=str(next(_isbn)), nb_exemplaires=1)
             for i in range(5)

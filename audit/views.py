@@ -11,4 +11,6 @@ class AuditListe(RoleRequisMixin, ListView):
     context_object_name = "entrees"
     paginate_by = 20
     queryset = JournalAudit.objects.select_related("utilisateur")
+
+
 # Create your views here.

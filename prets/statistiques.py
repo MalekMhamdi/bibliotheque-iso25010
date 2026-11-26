@@ -1,4 +1,5 @@
 """EF-09 : statistiques du tableau de bord, en requêtes agrégées."""
+
 from decimal import Decimal
 
 from django.db.models import Count, Sum

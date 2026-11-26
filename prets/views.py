@@ -1,4 +1,3 @@
-
 """Vues des prêts (EF-06) : aucune règle métier ici, seulement des appels aux services."""
 
 from datetime import date
@@ -6,6 +5,7 @@ from datetime import date
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_POST
 
 from catalogue.models import Livre
@@ -14,7 +14,8 @@ from prets import services
 from prets.models import Pret
 from prets.services import RegleMetierError
 from prets.statistiques import calculer_statistiques
-from django.utils.dateparse import parse_date
+
+
 def _executer(request, action, message_succes):
     """Lance un service ; une erreur métier devient un message, pas une erreur 500."""
     try:
@@ -40,7 +41,7 @@ def pret_reserver(request, livre_pk):
 
 @role_requis("ADMIN", "BIBLIOTHECAIRE", "ADHERENT")
 def mes_prets(request):
-    services.marquer_retards(date.today())  
+    services.marquer_retards(date.today())
     prets = Pret.objects.filter(utilisateur=request.user).select_related("livre")
     prets = prets.order_by("-date_reservation", "-pk")
     return render(request, "prets/mes_prets.html", {"prets": prets})
@@ -48,7 +49,7 @@ def mes_prets(request):
 
 @role_requis("ADMIN", "BIBLIOTHECAIRE")
 def pret_liste(request):
-    services.marquer_retards(date.today())  
+    services.marquer_retards(date.today())
     statut = request.GET.get("statut", "")
     prets = Pret.objects.select_related("livre", "utilisateur")
     if statut in Pret.Statut.values:
@@ -102,16 +103,19 @@ def pret_annuler(request, pk):
     )
     return redirect("mes_prets" if est_adherent else "pret_liste")
 
+
 @role_requis("ADMIN", "BIBLIOTHECAIRE")
 def tableau_de_bord(request):
-    services.marquer_retards(date.today())  
+    services.marquer_retards(date.today())
     debut_txt = request.GET.get("debut", "")
     fin_txt = request.GET.get("fin", "")
+
     def _date_ou_none(texte):
         try:
             return parse_date(texte) if texte else None
         except ValueError:
             return None
+
     debut = _date_ou_none(debut_txt)
     fin = _date_ou_none(fin_txt)
     # parse_date lève ValueError pour une date impossible (ex. 2026-13-45)
@@ -121,4 +125,3 @@ def tableau_de_bord(request):
         "fin": fin_txt,
     }
     return render(request, "prets/tableau_de_bord.html", contexte)
-
