@@ -24,3 +24,7 @@ extend-exclude = ["*/migrations/*"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP"]
+
+filterwarnings = [
+    "ignore:No directory at:UserWarning:django.core.handlers.base",
+]
