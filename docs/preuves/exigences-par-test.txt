@@ -1,0 +1,77 @@
+tests/conftest.py:26:            email=f"{nom}@exemple.com",  # un email diffÃ©rent par rÃ´le (RM-07)
+tests/fiabilite/test_fiabilite.py:1:"""EQ-05 : fiabilité (rollback, pas d'erreur 500, récupération)."""
+tests/integration/test_audit_journal.py:1:"""EF-10 : journal d'audit (qui, quoi, quand)."""
+tests/integration/test_audit_journal.py:25:    """EF-10 : une entrée contient l'utilisateur, l'action, l'objet et la date."""
+tests/integration/test_audit_journal.py:41:    """EF-10 : SET_NULL, l'historique survit à la suppression du compte."""
+tests/integration/test_audit_journal.py:184:    """EF-10 / cadrage §1 : page réservée à l'ADMIN."""
+tests/integration/test_catalogue_auteurs.py:1:"""Tests du CRUD des auteurs (EF-04) avec contrôle des droits (EF-02).
+tests/integration/test_catalogue_generation.py:1:"""Génération de données de test : commande generer_catalogue (EF-08, EQ-02)."""
+tests/integration/test_catalogue_generation.py:21:    """RM-05 : 13 chiffres, tous différents."""
+tests/integration/test_catalogue_livres.py:1:"""Tests du CRUD des livres (EF-03) avec contrôle des droits (EF-02).
+tests/integration/test_catalogue_livres.py:11:  - RM-05 : un ISBN mal formé ou déjà utilisé est refusé AVEC un message
+tests/integration/test_catalogue_livres.py:166:    """RM-05 : le formulaire utilise NOTRE validateur et affiche son message."""
+tests/integration/test_catalogue_livres.py:181:    """RM-05 : un doublon est refusé PROPREMENT (message, pas de plantage)."""
+tests/integration/test_catalogue_modeles.py:5:  2. RM-05 : l'ISBN est unique (contrainte en base) ;
+tests/integration/test_catalogue_modeles.py:6:  3. RM-05 : l'ISBN a 13 chiffres (le modèle utilise le validateur) ;
+tests/integration/test_catalogue_modeles.py:41:# Règle 2 : RM-05, ISBN unique (refusé par la BASE elle-même)
+tests/integration/test_catalogue_modeles.py:51:# Règle 3 : RM-05, le modèle utilise le validateur de format
+tests/integration/test_catalogue_recherche.py:1:"""Recherche dans le catalogue : ?q= (EF-08)."""
+tests/integration/test_comptes_admin.py:1:"""Tests du compte administrateur et de la gestion des rôles (EF-05).
+tests/integration/test_comptes_connexion.py:1:"""Tests de connexion et déconnexion (EF-01).
+tests/integration/test_comptes_droits.py:1:"""Tests du contrôle des droits par rôle (EF-02).
+tests/integration/test_comptes_modele.py:1:"""Tests du modèle Utilisateur (EF-02, RM-07)."""
+tests/integration/test_comptes_modele.py:23:    """EF-02 : les 3 rôles du cadrage sont disponibles."""
+tests/integration/test_comptes_modele.py:30:    """RM-07 : un email ne peut appartenir qu'à un seul utilisateur."""
+tests/integration/test_comptes_securite.py:1:"""Tests de sécurité des comptes (EQ-06)."""
+tests/integration/test_comptes_securite.py:13:    """EQ-06 : le mot de passe enregistré n'est pas lisible."""
+tests/integration/test_comptes_securite.py:22:    """EQ-06 : l'algorithme de hachage est bcrypt."""
+tests/integration/test_marquer_retards.py:1:"""EF-07 : passage automatique des prêts EN_COURS en EN_RETARD."""
+tests/integration/test_navigation.py:1:"""Tests de navigation (facilité d'utilisation, EQ-04).
+tests/integration/test_prets_modele.py:1:"""Tests d'intégration du modèle Pret : RM-01, RM-06, suppression protégée."""
+tests/integration/test_prets_modele.py:25:    """EF-06 : un prêt nouvellement créé a le statut RESERVE."""
+tests/integration/test_prets_modele.py:42:    """RM-01 / RM-06 : seuls RESERVE, EN_COURS, EN_RETARD sont des prêts actifs."""
+tests/integration/test_prets_pages.py:1:"""Pages des prêts : EF-06 (droits, effets réels, messages d'erreur, menu)."""
+tests/integration/test_prets_pages.py:102:    """EF-06 : non connecté 302, mauvais rôle 403, bon rôle OK."""
+tests/integration/test_prets_pages.py:116:    """EF-06 : l'adhérent réserve -> un prêt RESERVE existe en base."""
+tests/integration/test_prets_pages.py:128:    """EF-06 / RM-01 : quota atteint -> message, redirection, aucun prêt créé."""
+tests/integration/test_prets_pages.py:163:    """EF-07 / RM-02 : RESERVE -> EN_COURS, retour prévu = aujourd'hui + 14 jours."""
+tests/integration/test_prets_pages.py:177:    """EF-07 : remettre un prêt déjà EN_COURS -> message, statut inchangé, pas de 500."""
+tests/integration/test_prets_pages.py:190:    """EF-07 / RM-03 : 2 jours de retard -> 1,00 € ajouté à la pénalité de l'adhérent."""
+tests/integration/test_prets_pages.py:211:    """EF-07 : rendre un prêt RESERVE -> message, statut inchangé."""
+tests/integration/test_prets_pages.py:239:    """EF-06 : prêt d'un autre -> 403 et statut inchangé."""
+tests/integration/test_prets_pages.py:262:    """EF-06 : annuler un prêt EN_COURS est interdit -> message, statut inchangé."""
+tests/integration/test_prets_pages.py:279:    """EF-06 : un adhérent ne voit pas les prêts des autres."""
+tests/integration/test_prets_pages.py:303:    """EF-06 : /prets/ liste tous les prêts, filtrables par statut."""
+tests/integration/test_prets_pages.py:329:    """EF-06 : liens « Mes prêts » / « Prêts » selon le rôle."""
+tests/integration/test_prets_workflow.py:1:"""Workflow des prêts : EF-06, EF-07 (+ RM-01, RM-02, RM-03, RM-04, RM-06).
+tests/integration/test_prets_workflow.py:54:    """Prêt emprunté le 01/03/2026 -> retour prévu le 15/03/2026 (RM-02)."""
+tests/integration/test_prets_workflow.py:72:    """EF-07 / RM-02 : RESERVE -> EN_COURS, retour prévu = emprunt + 14 jours."""
+tests/integration/test_prets_workflow.py:92:    """EF-07 : EN_COURS -> EN_RETARD seulement si aujourd'hui > date prévue."""
+tests/integration/test_prets_workflow.py:102:    """EF-07 : seuls les prêts EN_COURS peuvent passer EN_RETARD."""
+tests/integration/test_prets_workflow.py:123:        (date(2026, 4, 5), Decimal("10.00")),  # 21 jours : plafond + 1 (RM-03)
+tests/integration/test_prets_workflow.py:127:    """EF-07 / RM-03 : -> RENDU, pénalité 0,50 €/jour plafonnée à 10 €."""
+tests/integration/test_prets_workflow.py:141:    """RM-03 : la pénalité s'ajoute à la pénalité impayée déjà existante."""
+tests/integration/test_prets_workflow.py:153:    """EF-06 : RESERVE -> ANNULE."""
+tests/integration/test_prets_workflow.py:192:    """EF-06 / EF-07 : transition interdite -> erreur métier, rien ne change."""
+tests/integration/test_prets_workflow.py:210:    """EF-06 : un adhérent éligible réserve un livre disponible."""
+tests/integration/test_prets_workflow.py:220:    """RM-01 : 2 prêts actifs -> la 3e réservation est encore permise."""
+tests/integration/test_prets_workflow.py:230:    """RM-01 : RENDU et ANNULE ne comptent pas parmi les prêts actifs."""
+tests/integration/test_prets_workflow.py:244:    """RM-01 : 3 prêts actifs -> réservation refusée (quel que soit le statut actif)."""
+tests/integration/test_prets_workflow.py:256:    """RM-06 : 1 exemplaire, 1 prêt actif d'un autre -> 0 disponible -> refusé."""
+tests/integration/test_prets_workflow.py:267:    """RM-06 : un prêt RENDU libère l'exemplaire."""
+tests/integration/test_prets_workflow.py:277:    """RM-04 : compte inactif -> refusé."""
+tests/integration/test_prets_workflow.py:289:    """RM-04 : un prêt EN_RETARD bloque toute nouvelle réservation."""
+tests/integration/test_prets_workflow.py:301:    """RM-04 : pénalité impayée > 0 (dès 0,01 €) -> refusé."""
+tests/integration/test_tableau_de_bord.py:1:"""EF-09 : tableau de bord (chiffres exacts, top 5, période, droits)."""
+tests/unit/test_droit_reserver.py:1:"""Tests unitaires RM-04 : droit de réserver (couverture MC/DC)."""
+tests/unit/test_droit_reserver.py:21:    """RM-04 : réservation autorisée seulement si compte actif ET aucun retard
+tests/unit/test_isbn.py:1:"""Tests UNITAIRES de la validation de l'ISBN (RM-05).
+tests/unit/test_isbn.py:3:RM-05 : un ISBN est composé d'exactement 13 chiffres.
+tests/unit/test_quota_disponibilite.py:1:"""Tests unitaires RM-01 (quota de 3 prêts actifs) et RM-06 (disponibilité)."""
+tests/unit/test_quota_disponibilite.py:18:    """RM-01 : maximum 3 prêts actifs par adhérent."""
+tests/unit/test_quota_disponibilite.py:31:    """RM-06 : disponibles = exemplaires - prêts actifs du livre."""
+tests/unit/test_regles_prets.py:1:"""Tests unitaires des règles de prêt : RM-02 (durée) et RM-03 (pénalité)."""
+tests/unit/test_regles_prets.py:21:    """RM-02 : retour prévu = date d'emprunt + 14 jours."""
+tests/unit/test_regles_prets.py:35:    """RM-03 : nombre de jours de retard (prévu = 15/03/2026)."""
+tests/unit/test_regles_prets.py:51:    """RM-03 : 0,50 EUR par jour, plafonnée à 10 EUR."""
+tests/unit/test_regles_prets.py:56:    """RM-03 : les montants sont des Decimal, jamais des float."""
