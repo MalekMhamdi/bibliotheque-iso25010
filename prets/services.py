@@ -59,10 +59,15 @@ def remettre(pret, aujourd_hui, acteur=None):
 
 @transaction.atomic
 def marquer_retards(aujourd_hui):
-    """EF-07 : EN_COURS -> EN_RETARD si aujourd'hui > date prévue. Renvoie le nombre."""
-    return Pret.objects.filter(statut=S.EN_COURS, date_retour_prevue__lt=aujourd_hui).update(
-        statut=S.EN_RETARD
+    """EF-07 : EN_COURS -> EN_RETARD si dépassé. Chaque passage est journalisé (EF-10)."""
+    prets = list(
+        Pret.objects.filter(statut=S.EN_COURS, date_retour_prevue__lt=aujourd_hui)
     )
+    for pret in prets:
+        pret.statut = S.EN_RETARD
+        pret.save()
+        journaliser(None, JournalAudit.Action.RETARD, pret)
+    return len(prets)
 
 
 @transaction.atomic
