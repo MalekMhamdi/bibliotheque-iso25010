@@ -2,18 +2,19 @@
 
 from django.contrib import admin
 
+from audit.admin_mixins import JournalAdminMixin
 from catalogue.models import Auteur, Livre
 
 
 # @admin.register = "affiche ce modèle dans /admin, avec ces réglages"
 @admin.register(Auteur)
-class AuteurAdmin(admin.ModelAdmin):
+class AuteurAdmin(JournalAdminMixin, admin.ModelAdmin):
     list_display = ("nom", "nationalite")  # colonnes de la liste
     search_fields = ("nom",)  # barre de recherche par nom
 
 
 @admin.register(Livre)
-class LivreAdmin(admin.ModelAdmin):
+class LivreAdmin(JournalAdminMixin, admin.ModelAdmin):
     list_display = ("titre", "isbn", "categorie", "nb_exemplaires")
     list_filter = ("categorie",)  # filtre par catégorie (à droite)
     search_fields = ("titre", "isbn")  # recherche par titre ou ISBN
