@@ -10,6 +10,9 @@ testpaths = ["tests"]
 
 # -v = "verbose" : affiche le nom de chaque test et son résultat
 addopts = "-v"
+markers = [
+    "e2e: tests de bout en bout dans un vrai navigateur (Playwright)",
+]
 
 # Ignore un avertissement Django sans importance
 filterwarnings = [
