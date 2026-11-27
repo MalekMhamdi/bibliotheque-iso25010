@@ -137,7 +137,7 @@ def test_reserver_est_journalise_au_nom_de_l_adherent(client, creer_utilisateur)
 
 
 @pytest.mark.parametrize(
-    "page, statut_initial, action",
+    "nom_url, statut_initial, action",
     [
         ("pret_remettre", S.RESERVE, A.REMISE),
         ("pret_rendre", S.EN_COURS, A.RETOUR),
@@ -145,7 +145,7 @@ def test_reserver_est_journalise_au_nom_de_l_adherent(client, creer_utilisateur)
     ],
 )
 def test_actions_du_bibliothecaire_sont_journalisees(
-    client, creer_utilisateur, page, statut_initial, action
+    client, creer_utilisateur, nom_url, statut_initial, action
 ):
     biblio = creer_utilisateur("BIBLIOTHECAIRE")
     client.force_login(biblio)
@@ -157,7 +157,7 @@ def test_actions_du_bibliothecaire_sont_journalisees(
         date_retour_prevue=date.today() + timedelta(days=14),
     )
 
-    client.post(reverse(page, args=[pret.pk]))
+    client.post(reverse(nom_url, args=[pret.pk]))
 
     entree = JournalAudit.objects.get()
     assert entree.utilisateur == biblio
@@ -251,12 +251,15 @@ def test_supprimer_un_auteur_est_journalise(client, creer_utilisateur):
     assert entree.entite == "Auteur"
     assert entree.entite_id == pk
 
+
 def test_marquer_retards_est_journalise(creer_utilisateur):
     """EF-10 : le passage automatique en EN_RETARD laisse une trace par prêt."""
     adherent = creer_utilisateur("ADHERENT")
     livre = _livre()
     pret = Pret.objects.create(
-        utilisateur=adherent, livre=livre, statut=S.EN_COURS,
+        utilisateur=adherent,
+        livre=livre,
+        statut=S.EN_COURS,
         date_emprunt=date.today() - timedelta(days=20),
         date_retour_prevue=date.today() - timedelta(days=6),
     )

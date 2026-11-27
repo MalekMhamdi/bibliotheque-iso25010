@@ -1,4 +1,5 @@
 """EF-10 : les actions faites dans /admin sont aussi journalisées."""
+
 from decimal import Decimal
 
 import pytest
@@ -24,9 +25,7 @@ def admin_client(client):
 def test_creation_dans_l_admin_est_journalisee(admin_client):
     client, superuser = admin_client
 
-    client.post(
-        reverse("admin:catalogue_auteur_add"), {"nom": "Victor Hugo", "nationalite": "FR"}
-    )
+    client.post(reverse("admin:catalogue_auteur_add"), {"nom": "Victor Hugo", "nationalite": "FR"})
 
     entree = JournalAudit.objects.get()
     assert entree.utilisateur == superuser

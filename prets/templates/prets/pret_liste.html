@@ -34,14 +34,14 @@
           <td>
             {% if user.role == "BIBLIOTHECAIRE" %}
               {% if pret.statut == "RESERVE" %}
-                <form method="post" action="{% url 'pret_remettre' pret.pk %}" style="display:inline">
+                <form method="post" action="{% url 'pret_remettre' pret.pk %}" class="en-ligne">
                   {% csrf_token %}<button type="submit">Remettre</button>
                 </form>
-                <form method="post" action="{% url 'pret_annuler' pret.pk %}" style="display:inline">
+                <form method="post" action="{% url 'pret_annuler' pret.pk %}" class="en-ligne">
                   {% csrf_token %}<button type="submit">Annuler</button>
                 </form>
               {% elif pret.statut == "EN_COURS" or pret.statut == "EN_RETARD" %}
-                <form method="post" action="{% url 'pret_rendre' pret.pk %}" style="display:inline">
+                <form method="post" action="{% url 'pret_rendre' pret.pk %}" class="en-ligne">
                   {% csrf_token %}<button type="submit">Rendre</button>
                 </form>
               {% endif %}

@@ -1,0 +1,459 @@
+/* ============================================================
+   Feuille de style unique de la bibliothèque
+   - Styles posés sur les éléments HTML (table, form, button...) :
+     les templates existants sont mis en forme sans être modifiés.
+   - Couleurs choisies pour un contraste ≥ 4,5:1 (WCAG AA, EQ-04).
+   ============================================================ */
+
+:root {
+  --fond: #f6f7f9;
+  --surface: #ffffff;
+  --texte: #1f2933;
+  --texte-doux: #52606d;
+  --bordure: #d9dee3;
+  --primaire: #1d4ed8;        /* bleu : contraste 6,7:1 sur blanc */
+  --primaire-fonce: #1e3a8a;
+  --danger: #b91c1c;
+  --succes-fond: #e7f6ec;
+  --succes-texte: #14532d;
+  --erreur-fond: #fdecec;
+  --erreur-texte: #7f1d1d;
+  --rayon: 8px;
+  --ombre: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--texte);
+  background: var(--fond);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 1.75rem;
+  margin: 0 0 1rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+a {
+  color: var(--primaire);
+}
+
+a:hover {
+  color: var(--primaire-fonce);
+}
+
+/* Focus clavier toujours visible (accessibilité) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 2px;
+}
+
+/* ---------- Lien d'évitement (visible seulement au clavier) ---------- */
+.lien-evitement {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--primaire);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+.lien-evitement:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+/* ---------- En-tête et menu ---------- */
+.entete {
+  background: var(--primaire-fonce);
+  color: #fff;
+}
+
+.menu {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+}
+
+.menu a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+.marque {
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+
+.menu-liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  flex: 1;
+}
+
+.menu-compte {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.utilisateur {
+  font-size: 0.9rem;
+  color: #dbeafe;
+}
+
+/* ---------- Contenu ---------- */
+.contenu {
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+}
+
+.intro {
+  color: var(--texte-doux);
+  font-size: 1.05rem;
+}
+
+.pied {
+  text-align: center;
+  color: var(--texte-doux);
+  font-size: 0.85rem;
+  padding: 1rem;
+  border-top: 1px solid var(--bordure);
+}
+
+.pied p {
+  margin: 0;
+}
+
+/* ---------- Messages (succès / erreur) ---------- */
+.messages {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: var(--rayon);
+  margin-bottom: 0.5rem;
+  background: #e8eefc;
+  color: var(--primaire-fonce);
+  border-left: 4px solid var(--primaire);
+}
+
+.message-success {
+  background: var(--succes-fond);
+  color: var(--succes-texte);
+  border-left-color: #16a34a;
+}
+
+.message-error,
+.message-warning,
+[role="alert"] {
+  background: var(--erreur-fond);
+  color: var(--erreur-texte);
+  border-left: 4px solid var(--danger);
+  padding: 0.75rem 1rem;
+  border-radius: var(--rayon);
+}
+
+/* ---------- Boutons ---------- */
+button,
+input[type="submit"],
+.bouton {
+  display: inline-block;
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--primaire);
+  border-radius: var(--rayon);
+  background: var(--primaire);
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  line-height: 1.3;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.bouton:hover {
+  background: var(--primaire-fonce);
+  border-color: var(--primaire-fonce);
+  color: #fff;
+}
+
+.bouton-secondaire {
+  background: transparent;
+  border-color: #fff;
+}
+
+.bouton-secondaire:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #fff;
+}
+
+.en-ligne {
+  display: inline;
+  margin: 0;
+}
+
+/* ---------- Formulaires ---------- */
+form p {
+  margin: 0 0 1rem;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+  font: inherit;
+  width: 100%;
+  max-width: 28rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #9aa5b1;
+  border-radius: var(--rayon);
+  background: #fff;
+  color: var(--texte);
+}
+
+select[multiple] {
+  min-height: 9rem;
+}
+
+.helptext,
+form .helptext {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+.errorlist {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+/* Formulaires d'une page entière (connexion, livre, auteur) : une carte */
+.contenu > form[method="post"] {
+  background: var(--surface);
+  padding: 1.5rem;
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  max-width: 34rem;
+}
+
+.contenu > form[method="post"] a {
+  margin-left: 0.75rem;
+}
+
+/* Barre de recherche et filtre de période : sur une ligne */
+form[role="search"],
+.contenu > form[method="get"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+form[role="search"] label {
+  width: 100%;
+}
+
+form[role="search"] input[type="search"] {
+  flex: 1;
+  min-width: 14rem;
+}
+
+.contenu > form[method="get"] input[type="date"] {
+  width: auto;
+}
+
+.contenu > form[method="get"] label {
+  margin: 0;
+  align-self: center;
+}
+
+/* ---------- Tableaux ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--bordure);
+  vertical-align: middle;
+}
+
+thead th {
+  background: #eef1f5;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--texte-doux);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+td a + a {
+  margin-left: 0.75rem;
+}
+
+td form + form {
+  margin-left: 0.4rem;
+}
+
+/* Petits écrans : le tableau défile horizontalement au lieu de déborder */
+@media (max-width: 720px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ---------- Pagination et filtres ---------- */
+nav[aria-label="Pages"],
+nav[aria-label="Filtre par statut"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: 1rem 0;
+}
+
+nav[aria-label="Filtre par statut"] a[aria-current="true"] {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--texte);
+}
+
+/* ---------- Tableau de bord ---------- */
+.contenu > ul:not(.messages):not(.cartes) {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1rem;
+}
+
+.contenu > ul:not(.messages):not(.cartes) > li {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: 1rem 1.25rem;
+  color: var(--texte-doux);
+}
+
+.contenu > ul:not(.messages):not(.cartes) strong {
+  display: block;
+  font-size: 1.75rem;
+  color: var(--texte);
+}
+
+.contenu > ol {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 1rem 1rem 1rem 2.5rem;
+}
+
+.contenu > ol li {
+  padding: 0.2rem 0;
+}
+
+/* ---------- Cartes de l'accueil ---------- */
+.cartes {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1rem;
+}
+
+.carte {
+  background: var(--surface);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  box-shadow: var(--ombre);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.carte h2 {
+  margin-top: 0;
+}
+
+.carte p {
+  color: var(--texte-doux);
+  flex: 1;
+}
+
+.carte .bouton {
+  align-self: flex-start;
+}
