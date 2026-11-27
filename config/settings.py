@@ -143,14 +143,25 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
+# Email : l'application n'envoie aucun email, on garde le backend SMTP par défaut
+# de Django (le backend "console" est refusé par check --deploy).
 
-MAILERS = {
-    "default": {
-        "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
-}
+
+# ============================================================
+# Sécurité HTTPS (EQ-06)
+# Activée seulement derrière HTTPS (DJANGO_HTTPS=1) : en local et dans Docker,
+# l'application est servie en HTTP, et des cookies "secure" empêcheraient la connexion.
+# ============================================================
+HTTPS = os.getenv("DJANGO_HTTPS", "0") == "1"
+SESSION_COOKIE_SECURE = HTTPS
+CSRF_COOKIE_SECURE = HTTPS
+SECURE_SSL_REDIRECT = HTTPS
+SECURE_HSTS_SECONDS = 31536000 if HTTPS else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = HTTPS
+SECURE_HSTS_PRELOAD = HTTPS
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if HTTPS else None
+
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.SessionAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],

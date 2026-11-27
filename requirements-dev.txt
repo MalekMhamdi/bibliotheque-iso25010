@@ -1,8 +1,17 @@
 -r requirements.txt
+
+# Tests
 pytest==9.2.0
 pytest-django==4.14.0
 pytest-cov==7.1.0
+pytest-playwright==0.10.0
+playwright==1.65.2
+locust==2.47.0
+
+# Qualité du code (EQ-07)
 ruff==0.17.6
 radon==6.0.1
-gunicorn==27.0.1
-whitenoise==6.12.0
+
+# Sécurité (EQ-06)
+bandit==1.9.4
+pip-audit==2.10.1
