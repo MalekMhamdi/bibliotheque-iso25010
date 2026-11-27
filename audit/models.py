@@ -11,8 +11,10 @@ class JournalAudit(models.Model):
         REMISE = "REMISE", "Remise"
         RETOUR = "RETOUR", "Retour"
         ANNULATION = "ANNULATION", "Annulation"
-        RETARD = "RETARD", "Passage en retard" , 
-        
+        RETARD = (
+            "RETARD",
+            "Passage en retard",
+        )
 
     utilisateur = models.ForeignKey(
         settings.AUTH_USER_MODEL,

@@ -94,15 +94,15 @@ def _cible(page):
 
 
 @pytest.mark.parametrize(
-    "page, methode, role, attendu",
+    "nom_url, methode, role, attendu",
     DROITS,
     ids=[f"{p}-{m}-{r}" for p, m, r, _ in DROITS],
 )
-def test_droits_des_pages_de_prets(client, creer_utilisateur, page, methode, role, attendu):
+def test_droits_des_pages_de_prets(client, creer_utilisateur, nom_url, methode, role, attendu):
     """EF-06 : non connecté 302, mauvais rôle 403, bon rôle OK."""
     if role:
         client.force_login(creer_utilisateur(role))
-    url = _cible(page)
+    url = _cible(nom_url)
 
     reponse = getattr(client, methode)(url)
 
