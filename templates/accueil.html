@@ -2,5 +2,37 @@
 
 {% block contenu %}
   <h1>Bibliothèque ISO 25010</h1>
-  <p>Bienvenue.</p>
+
+  {% if user.is_authenticated %}
+    <p class="intro">Bonjour {{ user.username }}, que souhaitez-vous faire ?</p>
+
+    {# Raccourcis : mêmes droits que le menu (EQ-04 : réserver en peu de clics) #}
+    <ul class="cartes">
+      <li class="carte">
+        <h2>Catalogue</h2>
+        <p>Rechercher un livre par titre, auteur, ISBN ou catégorie.</p>
+        <a class="bouton" href="{% url 'livre_liste' %}">Voir les livres</a>
+      </li>
+      <li class="carte">
+        <h2>Mes prêts</h2>
+        <p>Suivre mes réservations, mes retours et ma pénalité.</p>
+        <a class="bouton" href="{% url 'mes_prets' %}">Voir mes prêts</a>
+      </li>
+      {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+        <li class="carte">
+          <h2>Gestion des prêts</h2>
+          <p>Remettre un livre, enregistrer un retour, annuler une réservation.</p>
+          <a class="bouton" href="{% url 'pret_liste' %}">Gérer les prêts</a>
+        </li>
+        <li class="carte">
+          <h2>Tableau de bord</h2>
+          <p>Prêts actifs, retards, livres les plus empruntés, pénalités.</p>
+          <a class="bouton" href="{% url 'tableau_de_bord' %}">Ouvrir le tableau de bord</a>
+        </li>
+      {% endif %}
+    </ul>
+  {% else %}
+    <p class="intro">Bienvenue. Connectez-vous pour consulter le catalogue et gérer vos prêts.</p>
+    <p><a class="bouton" href="{% url 'connexion' %}">Se connecter</a></p>
+  {% endif %}
 {% endblock %}

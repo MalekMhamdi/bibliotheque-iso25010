@@ -1,58 +1,72 @@
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Gestion de la bibliothèque : catalogue, adhérents et prêts.">
   <title>{% block titre %}Bibliothèque{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-  <header>
-    <nav aria-label="Navigation principale">
-      <a href="{% url 'accueil' %}">📚 Bibliothèque</a>
-      {% if user.is_authenticated %}
-        {# Liens pour TOUS les utilisateurs connectés #}
-        <a href="{% url 'livre_liste' %}">Livres</a>
-        <a href="{% url 'auteur_liste' %}">Auteurs</a>
-        <a href="{% url 'mes_prets' %}">Mes prêts</a>
+  {# Accessibilité : permet au clavier / lecteur d'écran de sauter le menu #}
+  <a class="lien-evitement" href="#contenu">Aller au contenu</a>
 
-        {# Lien réservé au personnel (les adhérents auraient un 403) #}
-        {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
-          <a href="{% url 'pret_liste' %}">Prêts</a>
-          <a href="{% url 'tableau_de_bord' %}">Tableau de bord</a>
+  <header class="entete">
+    <nav class="menu" aria-label="Navigation principale">
+      <a class="marque" href="{% url 'accueil' %}">📚 Bibliothèque</a>
+
+      <div class="menu-liens">
+        {% if user.is_authenticated %}
+          {# Liens pour TOUS les utilisateurs connectés #}
+          <a href="{% url 'livre_liste' %}">Livres</a>
+          <a href="{% url 'auteur_liste' %}">Auteurs</a>
+          <a href="{% url 'mes_prets' %}">Mes prêts</a>
+
+          {# Lien réservé au personnel (les adhérents auraient un 403) #}
+          {% if user.role == "ADMIN" or user.role == "BIBLIOTHECAIRE" %}
+            <a href="{% url 'pret_liste' %}">Prêts</a>
+            <a href="{% url 'tableau_de_bord' %}">Tableau de bord</a>
+          {% endif %}
+
+          {# Lien réservé à l'ADMIN (les autres auraient un 403) #}
+          {% if user.role == "ADMIN" %}
+            <a href="{% url 'liste_utilisateurs' %}">Utilisateurs</a>
+            <a href="{% url 'audit_liste' %}">Audit</a>
+          {% endif %}
         {% endif %}
+      </div>
 
-        {# Lien réservé à l'ADMIN (les autres auraient un 403) #}
-        {% if user.role == "ADMIN" %}
-          <a href="{% url 'liste_utilisateurs' %}">Utilisateurs</a>
-          <a href="{% url 'audit_liste' %}">Audit</a>
+      <div class="menu-compte">
+        {% if user.is_authenticated %}
+          {# Connecté : on affiche son nom, son rôle et le bouton de déconnexion #}
+          <span class="utilisateur">Connecté : {{ user.username }} ({{ user.get_role_display }})</span>
+          <form method="post" action="{% url 'deconnexion' %}" class="en-ligne">
+            {% csrf_token %}
+            <button type="submit" class="bouton bouton-secondaire">Se déconnecter</button>
+          </form>
+        {% else %}
+          {# Pas connecté : lien vers la page de connexion #}
+          <a class="bouton" href="{% url 'connexion' %}">Se connecter</a>
         {% endif %}
-      {% endif %}
-
-      {% if user.is_authenticated %}
-        {# Connecté : on affiche son nom, son rôle et le bouton de déconnexion #}
-        <span>Connecté : {{ user.username }} ({{ user.get_role_display }})</span>
-        <form method="post" action="{% url 'deconnexion' %}" style="display:inline">
-          {% csrf_token %}
-          <button type="submit">Se déconnecter</button>
-        </form>
-      {% else %}
-        {# Pas connecté : lien vers la page de connexion #}
-        <a href="{% url 'connexion' %}">Se connecter</a>
-      {% endif %}
+      </div>
     </nav>
   </header>
 
-  <main>
+  <main id="contenu" class="contenu">
     {# Messages (succès / erreur) envoyés par les vues #}
     {% if messages %}
-      <ul aria-live="polite">
+      <ul class="messages" aria-live="polite">
         {% for message in messages %}
-          <li>{{ message }}</li>
+          <li class="message{% if message.tags %} message-{{ message.tags }}{% endif %}">{{ message }}</li>
         {% endfor %}
       </ul>
     {% endif %}
 
     {% block contenu %}{% endblock %}
   </main>
+
+  <footer class="pied">
+    <p>Bibliothèque ISO 25010</p>
+  </footer>
 </body>
 </html>

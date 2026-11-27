@@ -40,7 +40,7 @@
               <a href="{% url 'livre_suppression' livre.pk %}">Supprimer</a>
             {% endif %}
             {% if user.role == "ADHERENT" %}
-              <form method="post" action="{% url 'pret_reserver' livre.pk %}" style="display:inline">
+              <form method="post" action="{% url 'pret_reserver' livre.pk %}" class="en-ligne">
                 {% csrf_token %}
                 <button type="submit">Réserver</button>
               </form>

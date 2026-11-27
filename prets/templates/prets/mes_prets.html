@@ -28,7 +28,7 @@
           <td>{{ pret.penalite }} €</td>
           <td>
             {% if pret.statut == "RESERVE" %}
-              <form method="post" action="{% url 'pret_annuler' pret.pk %}" style="display:inline">
+              <form method="post" action="{% url 'pret_annuler' pret.pk %}" class="en-ligne">
                 {% csrf_token %}
                 <button type="submit">Annuler</button>
               </form>
