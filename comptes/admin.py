@@ -25,3 +25,4 @@ class UtilisateurAdmin(UserAdmin):
     add_fieldsets = UserAdmin.add_fieldsets + (
         ("Rôle dans la bibliothèque", {"fields": ("email", "role")}),
     )
+

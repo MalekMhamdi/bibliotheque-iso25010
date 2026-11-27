@@ -8,6 +8,7 @@ from django.urls import reverse
 from audit.models import JournalAudit
 from audit.services import journaliser
 from catalogue.models import Auteur, Livre
+from prets import services
 from prets.models import Pret
 
 pytestmark = pytest.mark.django_db
@@ -249,3 +250,20 @@ def test_supprimer_un_auteur_est_journalise(client, creer_utilisateur):
     assert entree.action == A.SUPPRESSION
     assert entree.entite == "Auteur"
     assert entree.entite_id == pk
+
+def test_marquer_retards_est_journalise(creer_utilisateur):
+    """EF-10 : le passage automatique en EN_RETARD laisse une trace par prêt."""
+    adherent = creer_utilisateur("ADHERENT")
+    livre = _livre()
+    pret = Pret.objects.create(
+        utilisateur=adherent, livre=livre, statut=S.EN_COURS,
+        date_emprunt=date.today() - timedelta(days=20),
+        date_retour_prevue=date.today() - timedelta(days=6),
+    )
+
+    services.marquer_retards(date.today())
+
+    entree = JournalAudit.objects.get()
+    assert entree.action == A.RETARD
+    assert entree.entite_id == pret.pk
+    assert entree.utilisateur is None  # action du système
